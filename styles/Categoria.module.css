@@ -1,0 +1,281 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 2rem 2rem 2rem;
+  min-height: 100vh;
+}
+
+.titulo {
+  color: white;
+  text-align: center;
+  margin: 20px auto;
+  font-size: 3rem;
+  font-family: 'Butterfly Kids', cursive;
+  position: relative;
+  top: 0;
+  padding-top: 0;
+}
+
+.botaoFlutuante {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: white 1px dashed;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 500;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+  white-space: nowrap;
+}
+
+.botaoFlutuante:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
+}
+
+.botaoFlutuante:active {
+  transform: scale(0.95);
+}
+
+.secaoAssistidos {
+  margin-bottom: 3rem;
+}
+
+.secaoAssistidos h2 {
+  color: white;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.filmesAssistidos {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.cardFilmeAssistido {
+  display: flex;
+  background: linear-gradient(135deg, #ffadc3, #9fcff88f);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px dashed white;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.cardFilmeAssistido:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(253, 100, 204, 0.3);
+}
+
+.posterAssistido {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px dashed white;
+  margin-right: 1.5rem;
+  flex-shrink: 0;
+}
+
+.infoAssistido {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.infoAssistido h4 {
+  color: #ffffff;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.avaliacaoUsuario {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.estrelas {
+  display: flex;
+  gap: 2px;
+}
+
+.estrela {
+  color: #ffd700;
+  font-size: 1.2rem;
+}
+
+.meiaEstrela {
+  color: #ffd700;
+  font-size: 1.2rem;
+  opacity: 0.5;
+}
+
+.numeroAvaliacao {
+  color: #F564A9;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: linear-gradient(45deg, #e75ca6, #a29bfe);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.resenha {
+  background-color: rgba(87, 38, 78, 0.1);
+  border-left: 3px solid #ffffff;
+  padding: 12px;
+  border-radius: 6px;
+  margin: 0;
+  color: #ffffff;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.botaoRemover {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #ff4757;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.botaoRemover svg {
+  width: 20px;
+  height: 20px;
+  stroke: white;
+}
+
+.botaoRemover:hover {
+  background-color: rgba(237, 143, 242, 0.2);
+  opacity: 1;
+  border-radius: 10px;
+  transform: scale(1.1);
+}
+
+.listaFilmes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.cardFilme {
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+
+.cardFilme:hover {
+  transform: translateY(-5px);
+}
+
+.botaoVoltar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  font-weight: 500;
+  border: white 1px dashed;
+  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+}
+
+.botaoVoltar svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+.botaoFlutuante svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
+
+.botaoVoltar:hover {
+  background-color: #F564A9;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+}
+
+.botaoFlutuante:hover {
+  background-color: #F564A9;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+}
+
+@media (max-width: 768px) {
+  .cabecalho {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .cardFilmeAssistido {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .posterAssistido {
+    margin: 0 auto 1rem auto;
+  }
+  
+  .botaoRemover {
+    position: static;
+    margin-top: 1rem;
+  }
+  
+  .listaFilmes {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+}

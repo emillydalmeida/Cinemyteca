@@ -1,0 +1,259 @@
+.navegacaoFlutuante {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(15px);
+  border: 1px dashed #F564A9;
+  border-radius: 50px;
+  padding: 12px 20px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 8px 25px rgba(245, 100, 169, 0.3);
+  transition: all 0.3s ease;
+  font-family: "Delius Swash Caps", cursive;
+}
+
+.containerPesquisa {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 200px;
+}
+
+.iconePesquisa {
+  position: absolute;
+  left: 12px;
+  color: white;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.campoPesquisa {
+  width: 100%;
+  padding: 10px 40px 10px 40px;
+  border: 1px dashed #F564A9;
+  border-radius: 25px;
+  background: linear-gradient(45deg, #e75ca6ab, #a29bfec0);
+  color: white;
+  font-size: 0.9rem;
+  font-family: "Delius Swash Caps", cursive;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.campoPesquisa::placeholder {
+  color: white;
+}
+
+.campoPesquisa:focus {
+  outline: none;
+  border-color: #F564A9;
+  background: linear-gradient(45deg, #e75ca6ab, #a29bfec0), rgba(255, 255, 255, 0.1);
+  background-blend-mode: overlay;
+  box-shadow: 0 0 0 2px rgba(245, 100, 169, 0.2);
+}
+
+.botaoLimparPesquisa {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.botaoLimparPesquisa:hover {
+  color: #F564A9;
+  background-color: rgba(245, 100, 169, 0.1);
+}
+
+.containerFiltro {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.botaoFiltro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  color: #F564A9;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.botaoFiltro:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: #F564A9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.4);
+}
+
+.botaoFiltro.ativo {
+  background: rgba(245, 100, 169, 0.2);
+  border-color: #F564A9;
+  color: #F564A9;
+  box-shadow: 0 0 0 2px rgba(245, 100, 169, 0.3);
+}
+
+.dropdownFiltro {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 10px;
+  background: white;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(245, 100, 169, 0.3);
+  border-radius: 8px;
+  padding: 8px;
+  min-width: 180px;
+  z-index: 1000;
+  animation: aparecer 0.2s ease;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.seletorFiltro {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 0.9rem;
+  font-family: "Delius Swash Caps", cursive;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.seletorFiltro:focus {
+  outline: none;
+  border-color: #F564A9;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 0 2px rgba(245, 100, 169, 0.2);
+}
+
+.seletorFiltro option {
+  font-family: "Delius Swash Caps", cursive;
+  padding: 8px;
+  background: white;
+  color: rgb(244, 136, 203);
+}
+
+.seletorFiltro option:hover {
+  background: white;
+  color: white;
+}
+
+.dropdownCustomizado {
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.dropdownCustomizado::-webkit-scrollbar {
+  display: none;
+}
+
+.dropdownCustomizado {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.opcaoDropdown {
+  padding: 10px 12px;
+  font-family: "Delius Swash Caps", cursive;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+  background: linear-gradient(45deg, #e75ca6ab, #a29bfec0);
+  color: white;
+}
+
+.opcaoDropdown:hover {
+  background: linear-gradient(45deg, #e75ca6, #9333ea);
+  transform: translateX(2px);
+}
+
+.botaoLimpar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(45deg, #ff6b6b, #ff4757);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.botaoLimpar:hover {
+  background: linear-gradient(45deg, #ff6b6b, #ff4757), rgba(255, 255, 255, 0.2);
+  background-blend-mode: overlay;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+@media (max-width: 768px) {
+  .navegacaoFlutuante {
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    transform: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 20px;
+  }
+
+  .containerPesquisa {
+    min-width: 160px;
+    flex: 1;
+  }
+
+  .campoPesquisa {
+    font-size: 16px;
+  }
+
+  .botaoFiltro {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dropdownFiltro {
+    min-width: 160px;
+  }
+}

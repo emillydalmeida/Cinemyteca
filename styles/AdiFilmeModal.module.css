@@ -1,0 +1,320 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modalContent {
+  background: linear-gradient(135deg, #EEAECA, #94BBE9);
+  border-radius: 15px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(250, 139, 180, 0.5);
+  border: 1px dashed white;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px dashed white;
+}
+
+.modalHeader h2 {
+  color: #fff;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 5px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modalBody {
+  padding: 25px;
+}
+
+.error {
+  background-color: #ff4444;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.searchSection {
+  margin-bottom: 20px;
+}
+
+.searchSection label {
+  display: block;
+  color: #fff;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px dashed white;
+  border-radius: 8px;
+  background-color: rgba(255, 206, 243, 0.493);
+  color: #fff;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: white;
+}
+
+.loading {
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  font-style: italic;
+}
+
+.searchResults {
+  background-color: rgba(255, 206, 243, 0.493);
+  border: 1px dashed white;
+  border-radius: 8px;
+  max-height: 300px;
+  width: 100%;
+  overflow-y: auto;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+
+.searchResult {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  cursor: pointer;
+  border-bottom: 1px dashed white;
+  transition: background-color 0.3s;
+}
+
+.searchResult:hover {
+  background-color: rgba(255, 206, 243, 0.493);
+}
+
+.searchResult:last-child {
+  border-bottom: none;
+}
+
+.resultPoster {
+  width: 50px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+
+.resultInfo h4 {
+  color: #fff;
+  margin: 0 0 4px 0;
+  font-size: 1rem;
+}
+
+.resultInfo p {
+  color: white;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.selectedMovie {
+  border: 1px dashed white;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: rgba(231, 92, 192, 0.1);
+}
+
+.movieInfo {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.selectedPoster {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.movieInfo div {
+  flex: 1;
+}
+
+.movieInfo h3 {
+  color: #fff;
+  margin: 0 0 8px 0;
+  font-size: 1.3rem;
+}
+
+.movieInfo p {
+  color: white;
+  margin: 0 0 8px 0;
+}
+
+.overview {
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.userInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup label {
+  color: #fff;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.ratingInput,
+.tagsInput {
+  padding: 10px;
+  border: 1px dashed white;
+  border-radius: 6px;
+  background-color: rgba(255, 206, 243, 0.493);
+  color: #fff;
+  font-size: 1rem;
+}
+
+.ratingInput:focus,
+.tagsInput:focus,
+.reviewTextarea:focus {
+  outline: none;
+  border-color: #e75ce7;
+}
+
+.reviewTextarea {
+  padding: 10px;
+  border: 1px dashed white;
+  border-radius: 6px;
+  background-color: rgba(255, 206, 243, 0.493);
+  color: #fff;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 20px 25px;
+  border-top: 1px dashed white;
+}
+
+.cancelButton,
+.saveButton {
+  padding: 10px 20px;
+  border: 1px dashed white;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cancelButton {
+  background-color: rgba(255, 206, 243, 0.493);
+  color: #fff;
+}
+
+.cancelButton:hover {
+  background-color: rgba(255, 206, 243, 0.942);
+}
+
+.saveButton {
+  background-color: rgba(250, 139, 180, 0.5);
+  color: #fff;
+}
+
+.saveButton:hover {
+  background-color: rgba(250, 139, 180, 0.8);
+}
+
+.saveButton:disabled {
+  background-color: rgba(250, 139, 180, 0.8);
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .modalContent {
+    margin: 10px;
+    max-height: 95vh;
+  }
+  
+  .modalBody {
+    padding: 15px;
+  }
+  
+  .searchSection {
+    margin-bottom: 15px;
+  }
+  
+  .movieInfo {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .selectedPoster {
+    align-self: center;
+  }
+  
+  .modalFooter {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .cancelButton,
+  .saveButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

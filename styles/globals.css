@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Puddles&family=Delius+Swash+Caps&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Butterfly+Kids&family=Delius+Swash+Caps&display=swap');
 
 body {
   background-image: url("/assets/fundo.gif");
@@ -11,8 +11,8 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 20px;
-  font-family: "Rubik Puddles", cursive;
-  font-size: 3rem;
+  font-family: "Butterfly Kids", cursive;
+  font-size: 3.5rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
