@@ -6,6 +6,10 @@
   margin: 20px auto;
 }
 
+.destaque {
+  color: #F564A9;
+}
+
 .generos {
   display: flex;
   flex-direction: column;

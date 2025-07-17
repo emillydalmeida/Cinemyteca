@@ -5,7 +5,7 @@ export default function Home() {
     return (
         <>
             <header>
-                <h1>Bem-vindo  à  Cin<span style="color: #F564A9;">emy</span>teca</h1>
+                <h1>Bem-vindo  à  Cin<span className={styles.destaque}>emy</span>teca</h1>
             </header>
 
             <main>
