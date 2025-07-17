@@ -1,0 +1,69 @@
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: "Rubik Puddles", cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 3rem;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+p {
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: "Delius Swash Caps", cursive;
+    font-size: 1.2rem;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+body {
+    background-image: url("assets/fundo.gif");
+}
+
+.menu-generos {
+    display: grid;
+    grid-template-columns: repeat(5, 2fr);
+    gap: 20px;
+    padding: 20px;
+    margin: 20px auto;
+}
+
+.generos {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    transition: transform 0.3s;
+}
+
+.generos img {
+    border-radius: 10%;
+    border: 2px dashed rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    width: 200px;
+    height: 280px;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.generos:hover {
+    transform: scale(1.02);
+}
+
+.generos:hover img {
+    transform: scale(1.05);
+}
+
+.generos span {
+    margin-top: 10px;
+    text-align: center;
+    font-family: "Delius Swash Caps", cursive;
+    font-size: 1.1rem;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-weight: bold;
+}
+
