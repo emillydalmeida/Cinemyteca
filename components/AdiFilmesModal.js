@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNotificacao } from './NotificacaoProvider';
 import ServicoTMDB from '../services/tmdbServico';
 import ServicoArmazenamentoLocal from '../services/ArmLocalServico';
 import styles from '../styles/AdiFilmeModal.module.css';
 
 export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdicionado, categoriaSelecionada }) {
+  const { mostrarErro } = useNotificacao();
   const [buscaTexto, setBuscaTexto] = useState('');
   const [resultadosBusca, setResultadosBusca] = useState([]);
   const [filmeSelecionado, setFilmeSelecionado] = useState(null);
@@ -28,7 +30,9 @@ export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdici
       const resultados = await ServicoTMDB.buscarFilmes(consulta);
       setResultadosBusca(resultados);
     } catch (error) {
-      setErro('Erro ao buscar filmes. Tente novamente.');
+      const mensagemErro = 'Erro ao buscar filmes. Tente novamente.';
+      setErro(mensagemErro);
+      mostrarErro(mensagemErro);
       console.error(error);
     } finally {
       setEstaBuscando(false);
@@ -53,12 +57,16 @@ export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdici
 
   const salvarFilme = async () => {
     if (!filmeSelecionado) {
-      setErro('Selecione um filme primeiro');
+      const mensagemErro = 'Selecione um filme primeiro';
+      setErro(mensagemErro);
+      mostrarErro(mensagemErro);
       return;
     }
 
     if (!dadosFilme.nota) {
-      setErro('Adicione uma nota para o filme');
+      const mensagemErro = 'Adicione uma nota para o filme';
+      setErro(mensagemErro);
+      mostrarErro(mensagemErro);
       return;
     }
 
@@ -70,11 +78,12 @@ export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdici
         comentarioUsuario: dadosFilme.comentario
       };
 
-      const filmeSalvo = ServicoArmazenamentoLocal.adicionarFilmeACategoria(categoriaSelecionada, filmeParaSalvar);
-      aoFilmeAdicionado(filmeSalvo);
+      await ServicoArmazenamentoLocal.adicionarFilmeACategoria(categoriaSelecionada, filmeParaSalvar);
+      aoFilmeAdicionado(filmeParaSalvar);
       fecharModal();
     } catch (error) {
       setErro(error.message);
+      mostrarErro(error.message);
     }
   };
 

@@ -10,7 +10,6 @@ body {
 
 h1 {
   text-align: center;
-  margin-bottom: 20px;
   font-family: "Butterfly Kids", cursive;
   font-size: 3.5rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -18,7 +17,6 @@ h1 {
 
 p {
   text-align: center;
-  margin-bottom: 20px;
   font-size: 1.2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }

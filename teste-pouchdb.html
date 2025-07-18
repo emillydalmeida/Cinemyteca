@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste PouchDB</title>
+    <!-- PouchDB CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb@8.0.1/dist/pouchdb.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pouchdb-find@8.0.1/dist/pouchdb.find.min.js"></script>
+</head>
+<body>
+    <h1>Teste PouchDB - Cinemyteca</h1>
+    <div id="status"></div>
+    <div id="resultados"></div>
+    
+    <script>
+        const status = document.getElementById('status');
+        const resultados = document.getElementById('resultados');
+        
+        status.innerHTML = 'Verificando PouchDB...';
+        
+        setTimeout(() => {
+            try {
+                if (window.PouchDB) {
+                    status.innerHTML = '✅ PouchDB carregado com sucesso!';
+                    
+                    const db = new PouchDB('teste-cinemyteca-ids');
+                    status.innerHTML += '<br>✅ Banco de dados criado!';
+                    
+                    const idTeste = 'acao_12345_' + Date.now();
+                    status.innerHTML += '<br>🔍 Testando ID: ' + idTeste;
+                    
+                    db.put({
+                        _id: idTeste,
+                        genero: 'acao',
+                        title: 'Filme Teste',
+                        id: 12345,
+                        data: new Date().toISOString()
+                    }).then(() => {
+                        status.innerHTML += '<br>✅ Documento inserido com sucesso!';
+                        
+                        return db.put({
+                            _id: 'migracao_localStorage_concluida',
+                            concluida: true,
+                            data: new Date().toISOString()
+                        });
+                    }).then(() => {
+                        status.innerHTML += '<br>✅ Documento de migração inserido!';
+                        
+                        return db.allDocs({ include_docs: true });
+                    }).then((result) => {
+                        status.innerHTML += '<br>✅ Busca funcionou!';
+                        status.innerHTML += '<br>📊 Total de documentos: ' + result.rows.length;
+                        
+                        resultados.innerHTML = '<h3>Todos os documentos:</h3>';
+                        result.rows.forEach(row => {
+                            resultados.innerHTML += '<p><strong>ID:</strong> ' + row.id + '</p>';
+                        });
+                    }).catch((err) => {
+                        status.innerHTML += '<br>❌ Erro: ' + err.message;
+                        console.error('Erro completo:', err);
+                    });
+                    
+                } else {
+                    status.innerHTML = '❌ PouchDB não foi carregado!';
+                }
+            } catch (error) {
+                status.innerHTML = '❌ Erro ao testar PouchDB: ' + error.message;
+                console.error(error);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

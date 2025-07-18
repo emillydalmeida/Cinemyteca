@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useNotificacao } from '../../components/NotificacaoProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
 import ServicoArmazenamentoLocal from '../../services/ArmLocalServico';
@@ -26,9 +27,15 @@ const obterNomeGenero = (genero) => {
 export default function PaginaGenero() {
   const router = useRouter();
   const { genero } = router.query;
+  const { mostrarSucesso, mostrarErro } = useNotificacao();
   const [modalAberto, setModalAberto] = useState(false);
   const [filmesAssistidos, setFilmesAssistidos] = useState([]);
   const [filmesFiltrados, setFilmesFiltrados] = useState([]);
+
+  useEffect(() => {
+    console.log('🔍 PouchDB disponível:', !!window.PouchDB);
+    console.log('🔍 PouchDBFind disponível:', !!window.PouchDBFind);
+  }, []);
 
   useEffect(() => {
     if (genero) {
@@ -36,22 +43,37 @@ export default function PaginaGenero() {
     }
   }, [genero]);
 
-  const carregarFilmesAssistidos = () => {
-    const filmes = ServicoArmazenamentoLocal.obterFilmesPorCategoria(genero);
-    setFilmesAssistidos(filmes);
-    setFilmesFiltrados(filmes);
+  const carregarFilmesAssistidos = async () => {
+    try {
+      console.log('🔄 Carregando filmes para gênero:', genero);
+      const filmes = await ServicoArmazenamentoLocal.obterFilmesPorCategoria(genero);
+      console.log('✅ Filmes carregados:', filmes.length);
+      setFilmesAssistidos(filmes);
+      setFilmesFiltrados(filmes);
+    } catch (error) {
+      console.error('❌ Erro ao carregar filmes:', error);
+      console.error('❌ Stack trace:', error.stack);
+      setFilmesAssistidos([]);
+      setFilmesFiltrados([]);
+    }
   };
 
-  const aoFilmeAdicionado = (filme) => {
-    carregarFilmesAssistidos(); 
+  const aoFilmeAdicionado = async (filme) => {
+    await carregarFilmesAssistidos(); 
     setModalAberto(false);
-    alert(`${filme.title} foi adicionado à categoria ${obterNomeGenero(genero)}!`);
+    mostrarSucesso(`${filme.title} foi adicionado à categoria ${obterNomeGenero(genero)}!`);
   };
 
-  const removerFilme = (idLocal) => {
+  const removerFilme = async (idLocal) => {
     if (confirm('Tem certeza que deseja remover este filme?')) {
-      ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, idLocal);
-      carregarFilmesAssistidos();
+      try {
+        await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, idLocal);
+        await carregarFilmesAssistidos();
+        mostrarSucesso('Filme removido com sucesso!');
+      } catch (error) {
+        console.error('❌ Erro ao remover filme:', error);
+        mostrarErro('Erro ao remover filme. Tente novamente.');
+      }
     }
   };
 
@@ -77,13 +99,13 @@ export default function PaginaGenero() {
 
   return (
     <div className={styles.container}>
-      <Link href="/" className={styles.botaoVoltar}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-arrow-left-icon lucide-circle-arrow-left">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="m12 8-4 4 4 4"/>
-          <path d="M16 12H8"/>
+      <Link href="/" className={`${styles.botaoPadrao} ${styles.botaoVoltar}`}>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="m12 8-4 4 4 4"/>
+        <path d="M16 12H8"/>
         </svg>
-        Voltar para o Início
+        Voltar
       </Link>
 
       <p className={styles.titulo}>
@@ -104,6 +126,8 @@ export default function PaginaGenero() {
         </svg>
         Adicionar Filme
       </button>
+
+
 
       {filmesFiltrados.length > 0 && (
         <div className={styles.secaoAssistidos}>

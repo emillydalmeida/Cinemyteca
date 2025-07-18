@@ -66,7 +66,6 @@ export default function NavegacaoFlutuante({
     aoFiltrarFilmes(filmesFiltrados);
   }, [textoPesquisa, tagSelecionada, filtroNota, filmesAssistidos, aoFiltrarFilmes]);
 
-  // useEffect para fechar dropdowns ao clicar fora
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerTagRef.current && !containerTagRef.current.contains(event.target)) {
@@ -95,7 +94,6 @@ export default function NavegacaoFlutuante({
 
   return (
     <div className={styles.navegacaoFlutuante}>
-      {/* Campo de Pesquisa */}
       <div className={styles.containerPesquisa}>
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={styles.iconePesquisa}>
           <circle cx="11" cy="11" r="8"/>
@@ -122,7 +120,6 @@ export default function NavegacaoFlutuante({
         )}
       </div>
 
-      {/* Botão Filtro por Tag */}
       <div className={styles.containerFiltro} ref={containerTagRef}>
         <button 
           className={`${styles.botaoFiltro} ${tagSelecionada ? styles.ativo : ''}`}
@@ -165,7 +162,6 @@ export default function NavegacaoFlutuante({
         )}
       </div>
 
-      {/* Botão Filtro por Nota */}
       <div className={styles.containerFiltro} ref={containerNotaRef}>
         <button 
           className={`${styles.botaoFiltro} ${filtroNota ? styles.ativo : ''}`}
@@ -239,7 +235,6 @@ export default function NavegacaoFlutuante({
         )}
       </div>
 
-      {/* Botão Limpar Filtros (só aparece quando há filtros ativos) */}
       {(textoPesquisa || tagSelecionada || filtroNota) && (
         <button 
           onClick={limparFiltros}

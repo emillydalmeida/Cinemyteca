@@ -1,7 +1,7 @@
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1rem 2rem 2rem 2rem;
+  padding: 5rem 2rem 2rem 2rem;
   min-height: 100vh;
 }
 
@@ -12,42 +12,6 @@
   font-size: 3rem;
   font-family: 'Butterfly Kids', cursive;
   position: relative;
-  top: 0;
-  padding-top: 0;
-}
-
-.botaoFlutuante {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: white;
-  text-decoration: none;
-  background: none;
-  border: white 1px dashed;
-  border-radius: 8px;
-  padding: 10px 15px;
-  font-weight: 500;
-  font-size: inherit;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  z-index: 999;
-  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
-  white-space: nowrap;
-}
-
-.botaoFlutuante:hover {
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
-}
-
-.botaoFlutuante:active {
-  transform: scale(0.95);
 }
 
 .secaoAssistidos {
@@ -206,11 +170,49 @@
 .cardFilme:hover {
   transform: translateY(-5px);
 }
-
-.botaoVoltar {
+.botaoFlutuante {
   position: fixed;
   top: 20px;
-  left: 20px;
+  right: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: white 1px dashed;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 500;
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  z-index: 999;
+  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+  white-space: nowrap;
+}
+
+.botaoFlutuante:hover {
+  background-color: #F564A9;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
+}
+
+.botaoFlutuante:active {
+  transform: scale(0.95);
+}
+
+.botaoFlutuante svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+} 
+
+.botaoPadrao {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -225,32 +227,46 @@
   font-weight: 500;
   border: white 1px dashed;
   box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
 }
 
-.botaoVoltar svg {
+.botaoPadrao:hover {
+  background-color: #F564A9;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
+}
+
+.botaoPadrao:active {
+  transform: scale(0.95);
+}
+
+.botaoPadrao svg {
   width: 20px;
   height: 20px;
   stroke: currentColor;
 }
 
-.botaoFlutuante svg {
-  width: 20px;
-  height: 20px;
-  stroke: currentColor;
+.botaoVoltar {
+  position: fixed;
+  top: 20px;
+  left: 20px;
 }
 
-.botaoVoltar:hover {
-  background-color: #F564A9;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+.botaoVoltar, 
+.botaoFlutuante {
+  background: rgba(255, 255, 255, 0.1);
+  border: white 1px dashed;
+  backdrop-filter: blur(10px);
 }
 
-.botaoFlutuante:hover {
-  background-color: #F564A9;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(245, 100, 169, 0.3);
+@supports not (backdrop-filter: blur(10px)) {
+  .botaoVoltar, 
+  .botaoFlutuante {
+    background: rgba(0, 0, 0, 0.3);
+  }
 }
 
 @media (max-width: 768px) {
