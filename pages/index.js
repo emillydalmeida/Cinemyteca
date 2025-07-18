@@ -29,6 +29,29 @@ export default function Home() {
         }
     };
 
+    const debugBancoDados = async () => {
+        try {
+            console.log('🔍 Iniciando debug do banco de dados...');
+            
+            const filmesAdaptador = await ServicoArmazenamentoLocal.obterTodosFilmes();
+            console.log('📊 Filmes do Adaptador:', filmesAdaptador);
+            
+            if (filmesAdaptador && Object.keys(filmesAdaptador).length > 0) {
+                Object.entries(filmesAdaptador).forEach(([genero, filmes]) => {
+                    console.log(`🎬 Gênero ${genero}:`, filmes.length, 'filmes');
+                    filmes.forEach((filme, index) => {
+                        console.log(`  ${index + 1}. ${filme.title} (ID: ${filme.id}, Local: ${filme.idLocal})`);
+                    });
+                });
+            }
+            
+            mostrarInfo('Debug concluído! Verifique o console do navegador.');
+        } catch (error) {
+            console.error('❌ Erro ao fazer debug:', error);
+            mostrarErro('Erro ao fazer debug. Tente novamente.');
+        }
+    };
+
     const abrirModalLimparDuplicatas = () => {
         setModalLimparDuplicatas(true);
     };
@@ -53,6 +76,14 @@ export default function Home() {
             <StatusSincronizacao />
             <div className={styles.botoesUtilidades}>
                 
+                <button 
+                    className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
+                    onClick={debugBancoDados}
+                    title="Debug do banco de dados"
+                >
+                    🔍 Debug
+                </button>
+
                 <button 
                     className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
                     onClick={mostrarEstatisticas}

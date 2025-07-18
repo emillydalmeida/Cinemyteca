@@ -1,40 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 🎬 Cinemyteca
 
-## Getting Started
+Uma aplicação Next.js para gerenciar sua coleção pessoal de filmes assistidos, com sincronização híbrida entre armazenamento local (PouchDB) e remoto (Supabase).
 
-First, run the development server:
+## ✨ Funcionalidades
+
+- 📱 **Interface Responsiva**: Design moderno que funciona em qualquer dispositivo
+- 🎭 **Categorias por Gênero**: Organize filmes por ação, comédia, drama, terror, etc.
+- ⭐ **Sistema de Avaliação**: Adicione notas e comentários pessoais
+- 🔄 **Sincronização Híbrida**: Funciona offline com PouchDB e sincroniza com Supabase
+- 📊 **Estatísticas**: Veja sua coleção com números e análises
+- 🗑️ **Gerenciamento**: Adicione, remova e gerencie duplicatas
+- 🔍 **Busca Integrada**: Pesquisa filmes via TMDB API
+- 💾 **Backup Local**: Exporte seus dados a qualquer momento
+
+## 🚀 Começando
+
+### Pré-requisitos
+
+- Node.js 14+ 
+- npm, yarn, pnpm ou bun
+
+### Instalação
+
+1. Clone o repositório:
+```bash
+git clone https://github.com/emillydalmeida/Cinemyteca.git
+cd Cinemyteca
+```
+
+2. Instale as dependências:
+```bash
+npm install
+# ou
+yarn install
+```
+
+3. Execute o servidor de desenvolvimento:
 
 ```bash
 npm run dev
-# or
+# ou
 yarn dev
-# or
+# ou
 pnpm dev
-# or
+# ou
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 🏗️ Arquitetura
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Tecnologias Principais
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+- **Next.js 15.4.1**: Framework React com SSR/SSG
+- **PouchDB 8.0.1**: Banco de dados local no navegador
+- **Supabase**: Backend remoto com PostgreSQL
+- **TMDB API**: Dados de filmes e posters
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Estrutura de Armazenamento
 
-## Learn More
+```
+📁 services/
+├── ServicoHibrido.js     # Orquestração entre local e remoto
+├── PouchDBServico.js     # Gerenciamento local
+├── SupabaseServico.js    # Gerenciamento remoto
+├── ArmLocalServico.js    # Interface de armazenamento
+└── tmdbServico.js        # Integração com TMDB
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Como Usar
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+1. **Adicionar Filmes**: Clique no + em qualquer categoria
+2. **Buscar**: Digite o nome do filme para encontrar no TMDB
+3. **Avaliar**: Adicione notas de 1-10 e comentários pessoais
+4. **Organizar**: Filmes são automaticamente categorizados por gênero
+5. **Estatísticas**: Veja o botão "Estatísticas" na página inicial
+6. **Backup**: Use o botão "Backup" para exportar seus dados
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🔧 Configuração Avançada
 
-## Deploy on Vercel
+### Variáveis de Ambiente
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Crie um arquivo `.env.local`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+```env
+NEXT_PUBLIC_SUPABASE_URL=sua_url_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sua_chave_publica
+NEXT_PUBLIC_TMDB_API_KEY=sua_chave_tmdb
+```
+
+### Banco de Dados Supabase
+
+Execute o script SQL em `sql/setup_supabase.sql` para criar as tabelas necessárias.
+
+## 📱 Recursos Mobile
+
+- Design responsivo otimizado para touch
+- Funciona offline com PouchDB
+- Progressive Web App (PWA) ready
+- Sincronização automática quando online
+
+## 🤝 Contribuindo
+
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para detalhes.
+
+## 👩‍💻 Desenvolvedora
+
+**Emilly Efanny** - [GitHub](https://github.com/emillydalmeida)
+
+---
+
+Feito com ❤️ para cinéfilos que amam organizar suas coleções!
