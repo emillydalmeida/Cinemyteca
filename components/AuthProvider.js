@@ -25,6 +25,12 @@ export function AuthProvider({ children }) {
 
     const verificarUsuario = async () => {
       try {
+        if (!servicoSupabase.client) {
+          console.log('⚠️ Supabase não configurado');
+          setCarregando(false);
+          return;
+        }
+
         const { data: { session } } = await servicoSupabase.client.auth.getSession();
         
         if (session?.user) {
@@ -42,6 +48,10 @@ export function AuthProvider({ children }) {
     };
 
     verificarUsuario();
+
+    if (!servicoSupabase.client) {
+      return;
+    }
 
     const { data: { subscription } } = servicoSupabase.client.auth.onAuthStateChange(
       (event, session) => {
