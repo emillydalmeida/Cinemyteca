@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useNotificacao } from '../../components/NotificacaoProvider';
+import { useAuth } from '../../components/AuthProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
@@ -30,6 +31,7 @@ export default function PaginaGenero() {
   const router = useRouter();
   const { genero } = router.query;
   const { mostrarSucesso, mostrarErro } = useNotificacao();
+  const { isAdmin } = useAuth();
   const [modalAberto, setModalAberto] = useState(false);
   const [modalRemover, setModalRemover] = useState({ isOpen: false, filme: null });
   const [filmesAssistidos, setFilmesAssistidos] = useState([]);
