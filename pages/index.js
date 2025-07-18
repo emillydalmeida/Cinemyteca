@@ -52,6 +52,68 @@ export default function Home() {
         }
     };
 
+    const limparDuplicatasLocais = async () => {
+        try {
+            mostrarInfo('Limpando duplicatas locais... Isso pode levar alguns segundos.');
+            console.log('🧹 Iniciando limpeza de duplicatas locais...');
+            
+            // Busca todos os filmes
+            const todosFilmes = await ServicoArmazenamentoLocal.obterTodosFilmes();
+            
+            if (!todosFilmes || Object.keys(todosFilmes).length === 0) {
+                mostrarInfo('Nenhum filme encontrado para limpar.');
+                return;
+            }
+
+            let totalRemovidos = 0;
+            
+            // Para cada gênero
+            for (const [genero, filmes] of Object.entries(todosFilmes)) {
+                console.log(`🎭 Processando gênero: ${genero} (${filmes.length} filmes)`);
+                
+                // Agrupa filmes por TMDB ID
+                const filmesAgrupados = {};
+                filmes.forEach(filme => {
+                    const tmdbId = filme.id;
+                    if (!filmesAgrupados[tmdbId]) {
+                        filmesAgrupados[tmdbId] = [];
+                    }
+                    filmesAgrupados[tmdbId].push(filme);
+                });
+                
+                // Para cada grupo de filmes com mesmo TMDB ID
+                for (const [tmdbId, grupoFilmes] of Object.entries(filmesAgrupados)) {
+                    if (grupoFilmes.length > 1) {
+                        console.log(`🔄 Filme "${grupoFilmes[0].title}" tem ${grupoFilmes.length} duplicatas`);
+                        
+                        // Mantém apenas o primeiro filme (mais recente ou com mais dados)
+                        const filmeParaManter = grupoFilmes.find(f => f.idLocal) || grupoFilmes[0];
+                        
+                        // Remove todas as outras cópias
+                        for (const filme of grupoFilmes) {
+                            if (filme !== filmeParaManter) {
+                                try {
+                                    await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, filme.id);
+                                    totalRemovidos++;
+                                    console.log(`  ✅ Removida duplicata: ${filme.title} (Local: ${filme.idLocal})`);
+                                } catch (error) {
+                                    console.warn(`  ⚠️ Erro ao remover duplicata:`, error);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            console.log(`🎉 Limpeza concluída! ${totalRemovidos} duplicatas removidas.`);
+            mostrarSucesso(`Limpeza concluída! ${totalRemovidos} duplicatas removidas.`);
+            
+        } catch (error) {
+            console.error('❌ Erro ao limpar duplicatas locais:', error);
+            mostrarErro('Erro ao limpar duplicatas locais. Tente novamente.');
+        }
+    };
+
     const abrirModalLimparDuplicatas = () => {
         setModalLimparDuplicatas(true);
     };
@@ -82,6 +144,14 @@ export default function Home() {
                     title="Debug do banco de dados"
                 >
                     🔍 Debug
+                </button>
+
+                <button 
+                    className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
+                    onClick={limparDuplicatasLocais}
+                    title="Limpar duplicatas locais"
+                >
+                    🧹 Limpar Local
                 </button>
 
                 <button 
