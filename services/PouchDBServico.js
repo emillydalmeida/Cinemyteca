@@ -182,10 +182,8 @@ class PouchDBServico {
       const filmeIdNum = Number(filmeId);
       
       const filmeDoc = documentos.find(doc => {
-        // Verifica se é o gênero correto
         if (doc.genero !== genero) return false;
         
-        // Compara com diferentes tipos e campos
         const matchId = doc.id === filmeId || String(doc.id) === filmeIdStr || Number(doc.id) === filmeIdNum;
         const matchIdLocal = doc.idLocal === filmeId || String(doc.idLocal) === filmeIdStr || Number(doc.idLocal) === filmeIdNum;
         
@@ -421,30 +419,6 @@ class PouchDBServico {
     }
   }
 
-  async criarBackup() {
-    try {
-      const resultado = await this.bancoLocal.allDocs({ include_docs: true });
-      const backup = {
-        versao: '1.0',
-        data: new Date().toISOString(),
-        filmes: resultado.rows.map(row => row.doc)
-      };
-      
-      const blob = new Blob([JSON.stringify(backup, null, 2)], 
-        { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `cinemyteca_backup_${new Date().toISOString().split('T')[0]}.json`;
-      link.click();
-      
-      URL.revokeObjectURL(url);
-      console.log('✅ Backup criado com sucesso');
-    } catch (error) {
-      console.error('❌ Erro ao criar backup:', error);
-    }
-  }
 
   async verificarSeFilmeExiste(genero, filmeId) {
     if (typeof window === 'undefined') {

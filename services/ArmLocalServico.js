@@ -100,31 +100,6 @@ class ServicoArmazenamentoLocal {
     }
   }
 
-  static async criarBackup() {
-    try {
-      const backup = await adaptadorPouchDB.obterTodosDados();
-      
-      const dataAtual = new Date().toISOString().split('T')[0];
-      const nomeArquivo = `cinemyteca-backup-${dataAtual}.json`;
-      
-      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = nomeArquivo;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      
-      URL.revokeObjectURL(url);
-      console.log('✅ Backup criado com sucesso:', nomeArquivo);
-    } catch (error) {
-      console.error('❌ Erro ao criar backup:', error);
-      throw error;
-    }
-  }
-
   static async obterEstatisticas() {
     try {
       const filmesAssistidos = await adaptadorPouchDB.obterTodosFilmes() || {};

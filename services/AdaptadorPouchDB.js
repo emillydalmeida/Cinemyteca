@@ -138,11 +138,6 @@ class AdaptadorPouchDB {
     return await pouchDBServico.obterTodosFilmes();
   }
 
-  async criarBackup() {
-    await this.aguardarInicializacao();
-    return await servicoHibrido.criarBackup();
-  }
-
   async obterEstatisticas() {
     await this.aguardarInicializacao();
     return await servicoHibrido.obterEstatisticas();

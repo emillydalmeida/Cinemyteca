@@ -1,4 +1,3 @@
-// Serviço para sincronização com Supabase
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
@@ -131,7 +130,6 @@ class ServicoSupabase {
         return [];
       }
 
-      // Converte formato Supabase para formato local
       const filmesFormatados = data.map(filme => ({
         id: filme.tmdb_id,
         idLocal: filme.id,
@@ -167,7 +165,6 @@ class ServicoSupabase {
     try {
       console.log(`🗑️ Tentando remover do Supabase - Gênero: ${genero}, ID: ${filmeId}`);
       
-      // Primeiro verifica quantos filmes existem com esse ID
       const { data: filmesExistentes, error: erroConsulta } = await supabase
         .from('filmes')
         .select('id, tmdb_id, titulo')
@@ -176,12 +173,12 @@ class ServicoSupabase {
 
       if (erroConsulta) {
         console.log('🔍 Erro ao buscar filmes no Supabase:', erroConsulta.message);
-        return true; // Considera sucesso se não consegue buscar
+        return true; 
       }
 
       if (!filmesExistentes || filmesExistentes.length === 0) {
         console.log('🔍 Filme não encontrado no Supabase');
-        return true; // Considera sucesso se não existe
+        return true;
       }
 
       console.log(`🎬 Encontrados ${filmesExistentes.length} filme(s) no Supabase:`, filmesExistentes);

@@ -9,26 +9,16 @@ import styles from "../styles/Home.module.css"
 export default function Home() {
     const { mostrarSucesso, mostrarErro, mostrarInfo } = useNotificacao();
 
-    const criarBackup = async () => {
-        try {
-            await ServicoArmazenamentoLocal.criarBackup();
-            mostrarSucesso('Backup criado com sucesso! Arquivo baixado.');
-        } catch (error) {
-            console.error('❌ Erro ao criar backup:', error);
-            mostrarErro('Erro ao criar backup. Tente novamente.');
-        }
-    };
-
     const mostrarEstatisticas = async () => {
         try {
             const stats = await ServicoArmazenamentoLocal.obterEstatisticas();
             const mensagem = `Estatísticas da Cinemyteca:
 
-Total de filmes: ${stats.totalFilmes}
-Nota média: ${stats.notaMedia}
+            Total de filmes: ${stats.totalFilmes}
+            Nota média: ${stats.notaMedia}
 
-Por gênero:
-${Object.entries(stats.porGenero).map(([gen, count]) => `${gen}: ${count} filmes`).join('\n')}`;
+            Por gênero:
+            ${Object.entries(stats.porGenero).map(([gen, count]) => `${gen}: ${count} filmes`).join('\n')}`;
             
             mostrarInfo(mensagem, 10000); 
         } catch (error) {
@@ -58,21 +48,6 @@ ${Object.entries(stats.porGenero).map(([gen, count]) => `${gen}: ${count} filmes
         <>
             <StatusSincronizacao />
             <div className={styles.botoesUtilidades}>
-                <button 
-                    className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
-                    onClick={criarBackup}
-                    title="Criar backup dos filmes"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <ellipse cx="12" cy="5" rx="9" ry="3"/>
-                        <path d="M3 12a9 3 0 0 0 5 2.69"/>
-                        <path d="M21 9.3V5"/>
-                        <path d="M3 5v14a9 3 0 0 0 6.47 2.88"/>
-                        <path d="M12 12v4h4"/>
-                        <path d="M13 20a5 5 0 0 0 9-3 4.5 4.5 0 0 0-4.5-4.5c-1.33 0-2.54.54-3.41 1.41L12 16"/>
-                    </svg>
-                    Backup
-                </button>
                 
                 <button 
                     className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}

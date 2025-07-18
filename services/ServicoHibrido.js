@@ -164,47 +164,6 @@ class ServicoHibrido {
     }
   }
 
-  async criarBackup() {
-    await this.inicializar();
-    
-    if (this.supabaseDisponivel) { 
-      try { 
-        const generos = ['acao', 'animacao', 'comedia', 'documentario', 'drama', 'fantasia', 'ficcao', 'romance', 'suspense', 'terror'];
-        let todosFilmes = [];
-        
-        for (const genero of generos) {
-          const filmes = await servicoSupabase.obterFilmesPorGenero(genero);
-          todosFilmes = todosFilmes.concat(filmes);
-        }
-
-        const backup = {
-          versao: '2.0',
-          fonte: 'supabase',
-          data: new Date().toISOString(),
-          totalFilmes: todosFilmes.length,
-          filmes: todosFilmes
-        };
-
-        const blob = new Blob([JSON.stringify(backup, null, 2)], 
-          { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `cinemyteca_backup_supabase_${new Date().toISOString().split('T')[0]}.json`;
-        link.click();
-        
-        URL.revokeObjectURL(url);
-        console.log('✅ Backup do Supabase criado com sucesso');
-        return;
-      } catch (error) {
-        console.error('❌ Erro ao criar backup do Supabase, usando local:', error);
-      }
-    }
-     
-    await pouchDBServico.criarBackup();
-  }
-
   obterStatus() {
     return {
       local: pouchDBServico.inicializado,
