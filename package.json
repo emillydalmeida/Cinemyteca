@@ -11,8 +11,6 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.52.0",
     "next": "15.4.1",
-    "pouchdb": "^9.0.0",
-    "pouchdb-find": "^9.0.0",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

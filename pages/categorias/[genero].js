@@ -5,7 +5,7 @@ import { useNotificacao } from '../../components/NotificacaoProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
 import ModalConfirmacao from '../../components/ModalConfirmacao';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
-import ServicoArmazenamentoLocal from '../../services/ArmLocalServico';
+import servicoFilmes from '../../services/ServicoFilmes';
 import { useIsClient } from '../../hooks/useIsClient';
 import styles from '../../styles/Categoria.module.css';
 
@@ -39,13 +39,6 @@ export default function PaginaGenero() {
   const isClient = useIsClient();
 
   useEffect(() => {
-    if (isClient && typeof window !== 'undefined') {
-      console.log('🔍 PouchDB disponível:', !!window.PouchDB);
-      console.log('🔍 PouchDBFind disponível:', !!window.PouchDBFind);
-    }
-  }, [isClient]);
-
-  useEffect(() => {
     if (genero && isClient) {
       carregarFilmesAssistidos();
     }
@@ -56,7 +49,7 @@ export default function PaginaGenero() {
       setCarregando(true);
       setErro(null);
       
-      const filmes = await ServicoArmazenamentoLocal.obterFilmesPorCategoria(genero);
+      const filmes = await servicoFilmes.obterFilmesPorGenero(genero);
       
       setFilmesAssistidos(filmes);
       setFilmesFiltrados(filmes);
@@ -85,9 +78,9 @@ export default function PaginaGenero() {
     if (!filme) return;
 
     try {
-      console.log(`🗑️ Removendo filme: ${filme.title} (TMDB ID: ${filme.id}, Local ID: ${filme.idLocal})`);
+      console.log(`🗑️ Removendo filme: ${filme.title} (TMDB ID: ${filme.id})`);
       
-      const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, filme.id);
+      const sucesso = await servicoFilmes.removerFilme(genero, filme.id);
       
       if (sucesso) {
         await new Promise(resolve => setTimeout(resolve, 500));
@@ -103,8 +96,8 @@ export default function PaginaGenero() {
     }
   };
 
-  const removerFilme = async (idLocal) => {
-    const filme = filmesAssistidos.find(f => f.idLocal === idLocal);
+  const removerFilme = async (id) => {
+    const filme = filmesAssistidos.find(f => f.id === id);
     if (!filme) {
       mostrarErro('Filme não encontrado.');
       return;
@@ -215,7 +208,7 @@ export default function PaginaGenero() {
         <div className={styles.secaoAssistidos}>
           <div className={styles.filmesAssistidos}>
             {filmesFiltrados.map((filme) => (
-              <div key={filme.idLocal} className={styles.cardFilmeAssistido}>
+              <div key={filme.id} className={styles.cardFilmeAssistido}>
                 <img 
                   src={filme.posterPath || '/assets/no-image.svg'} 
                   alt={filme.title}
@@ -245,7 +238,7 @@ export default function PaginaGenero() {
                   )}
                 </div>
                 <button
-                  onClick={() => removerFilme(filme.idLocal)}
+                  onClick={() => removerFilme(filme.id)}
                   className={styles.botaoRemover}
                   title="Remover filme"
                 >

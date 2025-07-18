@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNotificacao } from './NotificacaoProvider';
 import ServicoTMDB from '../services/tmdbServico';
-import ServicoArmazenamentoLocal from '../services/ArmLocalServico';
+import servicoFilmes from '../services/ServicoFilmes';
 import styles from '../styles/AdiFilmeModal.module.css';
 
 export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdicionado, categoriaSelecionada }) {
@@ -78,7 +78,7 @@ export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdici
         comentarioUsuario: dadosFilme.comentario
       };
 
-      await ServicoArmazenamentoLocal.adicionarFilmeACategoria(categoriaSelecionada, filmeParaSalvar);
+      await servicoFilmes.adicionarFilme(categoriaSelecionada, filmeParaSalvar);
       aoFilmeAdicionado(filmeParaSalvar);
       fecharModal();
     } catch (error) {
