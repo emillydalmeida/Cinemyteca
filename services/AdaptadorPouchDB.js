@@ -1,4 +1,5 @@
 import servicoHibrido from './ServicoHibrido.js';
+import pouchDBServico from './PouchDBServico.js';
 
 class AdaptadorPouchDB {
   constructor() {
@@ -40,7 +41,6 @@ class AdaptadorPouchDB {
   }
 
   async obterFilmesPorGenero(genero) {
-    // Verifica se está no servidor (SSR)
     if (typeof window === 'undefined') {
       console.log('🔍 Rodando no servidor, retornando array vazio');
       return [];
@@ -71,7 +71,6 @@ class AdaptadorPouchDB {
   }
 
   async verificarSeFilmeExiste(genero, filmeId) {
-    // Verifica se está no servidor (SSR)
     if (typeof window === 'undefined') {
       console.log('🔍 Rodando no servidor, retornando false');
       return false;
@@ -123,11 +122,6 @@ class AdaptadorPouchDB {
     pouchDBServico.configurarSincronizacao(urlRemota);
   }
 
-  async obterEstatisticas() {
-    await this.aguardarInicializacao();
-    return await pouchDBServico.obterEstatisticas();
-  }
-
   async buscarFilmes(termo, genero = null) {
     await this.aguardarInicializacao();
     return await pouchDBServico.buscarFilmes(termo, genero);
@@ -157,11 +151,6 @@ class AdaptadorPouchDB {
   async obterGeneros() {
     await this.aguardarInicializacao();
     return await pouchDBServico.obterGenerosComFilmes();
-  }
-
-  async buscarFilmes(termo, genero) {
-    await this.aguardarInicializacao();
-    return await pouchDBServico.buscarFilmes(termo, genero);
   }
 
   async limparTudo() {
