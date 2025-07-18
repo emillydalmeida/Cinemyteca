@@ -65,6 +65,18 @@ class ServicoSupabase {
     }
 
     try {
+      const { data: filmeExistente, error: erroVerificacao } = await supabase
+        .from('filmes')
+        .select('id')
+        .eq('tmdb_id', filme.id)
+        .eq('genero', filme.genero)
+        .single();
+
+      if (filmeExistente) {
+        console.log('⚠️ Filme já existe no Supabase, não adicionando duplicata');
+        return filmeExistente;
+      }
+
       const filmeData = {
         tmdb_id: filme.id,
         titulo: filme.title,
@@ -155,22 +167,25 @@ class ServicoSupabase {
     try {
       console.log(`🗑️ Tentando remover do Supabase - Gênero: ${genero}, ID: ${filmeId}`);
       
-      // Primeiro verifica se o filme existe
-      const { data: filmeExistente, error: erroConsulta } = await supabase
+      // Primeiro verifica quantos filmes existem com esse ID
+      const { data: filmesExistentes, error: erroConsulta } = await supabase
         .from('filmes')
         .select('id, tmdb_id, titulo')
         .eq('genero', genero)
-        .eq('tmdb_id', filmeId)
-        .single();
+        .eq('tmdb_id', filmeId);
 
       if (erroConsulta) {
-        console.log('🔍 Filme não encontrado no Supabase para remoção:', erroConsulta.message);
+        console.log('🔍 Erro ao buscar filmes no Supabase:', erroConsulta.message);
+        return true; // Considera sucesso se não consegue buscar
+      }
+
+      if (!filmesExistentes || filmesExistentes.length === 0) {
+        console.log('🔍 Filme não encontrado no Supabase');
         return true; // Considera sucesso se não existe
       }
 
-      console.log('🎬 Filme encontrado no Supabase:', filmeExistente);
+      console.log(`🎬 Encontrados ${filmesExistentes.length} filme(s) no Supabase:`, filmesExistentes);
 
-      // Agora remove o filme
       const { error } = await supabase
         .from('filmes')
         .delete()
@@ -182,7 +197,7 @@ class ServicoSupabase {
         return false;
       }
 
-      console.log('✅ Filme removido do Supabase');
+      console.log(`✅ ${filmesExistentes.length} filme(s) removido(s) do Supabase`);
       return true;
     } catch (error) {
       console.error('❌ Erro ao remover filme:', error);
@@ -240,11 +255,9 @@ class ServicoSupabase {
       let filmesComNota = 0;
 
       data.forEach(filme => {
-        // Conta por gênero
         estatisticas.porGenero[filme.genero] = 
           (estatisticas.porGenero[filme.genero] || 0) + 1;
 
-        // Calcula média de notas
         if (filme.nota_usuario && filme.nota_usuario > 0) {
           somaNotas += filme.nota_usuario;
           filmesComNota++;
@@ -263,13 +276,75 @@ class ServicoSupabase {
   }
 
   obterUsuarioId() {
-    // Gera um ID único por dispositivo/navegador
     let userId = localStorage.getItem('cinemyteca_user_id');
     if (!userId) {
       userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
       localStorage.setItem('cinemyteca_user_id', userId);
     }
     return userId;
+  }
+
+  async limparDuplicatas(genero = null) {
+    if (!supabase || !this.inicializado) {
+      console.log('⚠️ Supabase não disponível para limpar duplicatas');
+      return false;
+    }
+
+    try {
+      console.log('🧹 Iniciando limpeza de duplicatas...');
+      
+      let query = supabase
+        .from('filmes')
+        .select('id, tmdb_id, genero, titulo, data_adicao');
+      
+      if (genero) {
+        query = query.eq('genero', genero);
+      }
+      
+      const { data: filmes, error } = await query.order('data_adicao', { ascending: true });
+
+      if (error) {
+        console.error('❌ Erro ao buscar filmes para limpeza:', error);
+        return false;
+      }
+
+      const grupos = {};
+      filmes.forEach(filme => {
+        const chave = `${filme.genero}_${filme.tmdb_id}`;
+        if (!grupos[chave]) {
+          grupos[chave] = [];
+        }
+        grupos[chave].push(filme);
+      });
+
+      let duplicatasRemovidas = 0;
+       
+      for (const [chave, grupo] of Object.entries(grupos)) {
+        if (grupo.length > 1) {
+          console.log(`🔍 Encontradas ${grupo.length} duplicatas para ${grupo[0].titulo}`);
+           
+          const paraRemover = grupo.slice(1);
+          
+          for (const filme of paraRemover) {
+            const { error: erroRemocao } = await supabase
+              .from('filmes')
+              .delete()
+              .eq('id', filme.id);
+              
+            if (!erroRemocao) {
+              duplicatasRemovidas++;
+              console.log(`✅ Duplicata removida: ${filme.titulo} (ID: ${filme.id})`);
+            }
+          }
+        }
+      }
+
+      console.log(`🎯 Limpeza concluída: ${duplicatasRemovidas} duplicatas removidas`);
+      return true;
+    } catch (error) {
+      console.error('❌ Erro na limpeza de duplicatas:', error);
+      return false;
+    }
   }
 
   async sincronizarComLocal(pouchDBService) {
