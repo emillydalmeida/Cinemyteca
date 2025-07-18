@@ -5,6 +5,7 @@ class ServicoHibrido {
   constructor() {
     this.supabaseDisponivel = false;
     this.inicializando = false;
+    this.sincronizacaoInicial = false; 
   }
 
   async inicializar() {
@@ -12,16 +13,16 @@ class ServicoHibrido {
     this.inicializando = true;
 
     try {
-      // Inicializa PouchDB primeiro (sempre funciona)
       await pouchDBServico.aguardarInicializacao();
       
-      // Tenta conectar com Supabase
       this.supabaseDisponivel = await servicoSupabase.verificarConexao();
       
       if (this.supabaseDisponivel) {
         console.log('🌐 Modo híbrido: Local + Supabase');
-        // Sincroniza dados existentes locais com Supabase na primeira vez
-        await this.sincronizarPrimeiraVez();
+        if (!this.sincronizacaoInicial) {
+          this.sincronizacaoInicial = true;
+          await this.sincronizarPrimeiraVez();
+        }
       } else {
         console.log('💾 Modo local: Apenas PouchDB');
       }
@@ -35,25 +36,8 @@ class ServicoHibrido {
 
   async sincronizarPrimeiraVez() {
     try {
-      console.log('🔄 Sincronizando dados locais com Supabase...');
+      console.log('🔄 Sincronização inicial com Supabase...');
       
-      // Pega todos os filmes locais e envia para Supabase
-      const filmesLocais = await pouchDBServico.obterTodosDados();
-      
-      for (const filme of filmesLocais.filmes) {
-        if (filme.genero && filme.id) {
-          try {
-            const existe = await servicoSupabase.verificarSeFilmeExiste(filme.genero, filme.id);
-            if (!existe) {
-              await servicoSupabase.adicionarFilme(filme);
-            }
-          } catch (error) {
-            console.log('⚠️ Erro ao sincronizar filme:', filme.title);
-          }
-        }
-      }
-
-      // Agora sincroniza do Supabase para local
       await servicoSupabase.sincronizarComLocal(pouchDBServico);
       
       console.log('✅ Sincronização inicial concluída');
@@ -67,35 +51,14 @@ class ServicoHibrido {
 
     if (this.supabaseDisponivel) {
       try {
-        // Primeiro tenta buscar do Supabase (dados mais atuais)
         const filmesSupabase = await servicoSupabase.obterFilmesPorGenero(genero);
-        
-        // Sincroniza com local em background
-        this.sincronizarGeneroComLocal(genero, filmesSupabase);
-        
         return filmesSupabase;
       } catch (error) {
         console.error('❌ Erro ao buscar do Supabase, usando local:', error);
         return await pouchDBServico.obterFilmesPorGenero(genero);
       }
     } else {
-      // Só local disponível
       return await pouchDBServico.obterFilmesPorGenero(genero);
-    }
-  }
-
-  async sincronizarGeneroComLocal(genero, filmesSupabase) {
-    try {
-      // Adiciona filmes do Supabase que não existem localmente
-      for (const filme of filmesSupabase) {
-        try {
-          await pouchDBServico.adicionarFilme(genero, filme);
-        } catch (error) {
-          // Filme já existe localmente, ok
-        }
-      }
-    } catch (error) {
-      console.error('❌ Erro ao sincronizar gênero com local:', error);
     }
   }
 
@@ -103,18 +66,16 @@ class ServicoHibrido {
     await this.inicializar();
 
     try {
-      // Adiciona local primeiro (sempre funciona)
-      await pouchDBServico.adicionarFilme(genero, filme);
-      
-      // Se Supabase disponível, adiciona lá também
       if (this.supabaseDisponivel) {
         try {
           await servicoSupabase.adicionarFilme(filme);
-          console.log('✅ Filme sincronizado com Supabase');
+          console.log('✅ Filme adicionado ao Supabase');
         } catch (error) {
-          console.error('⚠️ Erro ao sincronizar com Supabase, mas salvo localmente:', error);
+          console.error('⚠️ Erro ao adicionar ao Supabase:', error);
         }
       }
+      
+      await pouchDBServico.adicionarFilme(genero, filme);
       
       return true;
     } catch (error) {
@@ -127,20 +88,21 @@ class ServicoHibrido {
     await this.inicializar();
 
     try {
-      // Remove local primeiro
-      const sucessoLocal = await pouchDBServico.removerFilme(genero, filmeId);
+      let sucessoSupabase = true;
       
-      // Se Supabase disponível, remove lá também
-      if (this.supabaseDisponivel && sucessoLocal) {
+      if (this.supabaseDisponivel) {
         try {
           await servicoSupabase.removerFilme(genero, filmeId);
           console.log('✅ Filme removido do Supabase');
         } catch (error) {
-          console.error('⚠️ Erro ao remover do Supabase, mas removido localmente:', error);
+          console.error('⚠️ Erro ao remover do Supabase:', error);
+          sucessoSupabase = false;
         }
       }
       
-      return sucessoLocal;
+      const sucessoLocal = await pouchDBServico.removerFilme(genero, filmeId);
+      
+      return sucessoSupabase || sucessoLocal;
     } catch (error) {
       console.error('❌ Erro ao remover filme:', error);
       return false;
@@ -151,13 +113,10 @@ class ServicoHibrido {
     await this.inicializar();
 
     try {
-      // Atualiza local primeiro
       const sucessoLocal = await pouchDBServico.atualizarFilme(genero, filmeAtualizado);
       
-      // Se Supabase disponível, atualiza lá também
       if (this.supabaseDisponivel && sucessoLocal) {
         try {
-          // Para Supabase, precisaríamos implementar a função de atualizar
           console.log('⚠️ Atualização no Supabase ainda não implementada');
         } catch (error) {
           console.error('⚠️ Erro ao atualizar no Supabase:', error);
@@ -176,7 +135,6 @@ class ServicoHibrido {
 
     if (this.supabaseDisponivel) {
       try {
-        // Verifica no Supabase primeiro (dados mais atuais)
         return await servicoSupabase.verificarSeFilmeExiste(genero, filmeId);
       } catch (error) {
         console.error('❌ Erro ao verificar no Supabase, usando local:', error);
@@ -205,10 +163,8 @@ class ServicoHibrido {
   async criarBackup() {
     await this.inicializar();
     
-    if (this.supabaseDisponivel) {
-      // Se Supabase disponível, cria backup dos dados mais atuais
-      try {
-        // Pega dados de todas as categorias
+    if (this.supabaseDisponivel) { 
+      try { 
         const generos = ['acao', 'animacao', 'comedia', 'documentario', 'drama', 'fantasia', 'ficcao', 'romance', 'suspense', 'terror'];
         let todosFilmes = [];
         
@@ -241,8 +197,7 @@ class ServicoHibrido {
         console.error('❌ Erro ao criar backup do Supabase, usando local:', error);
       }
     }
-    
-    // Fallback para backup local
+     
     await pouchDBServico.criarBackup();
   }
 

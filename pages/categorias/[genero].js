@@ -80,7 +80,8 @@ export default function PaginaGenero() {
         const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, idLocal);
         
         if (sucesso) {
-          // Recarrega os filmes após remoção
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
           await carregarFilmesAssistidos();
           mostrarSucesso('Filme removido com sucesso!');
         } else {

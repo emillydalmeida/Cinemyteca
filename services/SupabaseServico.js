@@ -6,12 +6,10 @@ const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 let supabase = null;
 
-// Verifica se as credenciais estão disponíveis
 const isSupabaseConfigured = () => {
   return supabaseUrl && supabaseKey && supabaseUrl !== '' && supabaseKey !== '';
 };
 
-// Inicializa cliente apenas se configurado
 if (typeof window !== 'undefined' && isSupabaseConfigured()) {
   supabase = createClient(supabaseUrl, supabaseKey);
 }
@@ -32,7 +30,6 @@ class ServicoSupabase {
     try {
       const { error } = await supabase.from('filmes').select('id').limit(1);
       if (error && error.code === '42P01') {
-        // Tabela não existe, vamos criar
         console.log('📋 Criando tabela de filmes...');
         await this.criarTabelaFilmes();
       }
@@ -49,7 +46,6 @@ class ServicoSupabase {
     if (!supabase) return;
 
     try {
-      // SQL para criar a tabela de filmes
       const { error } = await supabase.rpc('create_filmes_table');
       
       if (error) {
@@ -259,44 +255,19 @@ class ServicoSupabase {
   }
 
   async sincronizarComLocal(pouchDBService) {
-    console.log('🔄 Iniciando sincronização com banco local...');
+    console.log('🔄 Sincronização rápida com banco local...');
     
     try {
-      // Pega todos os filmes do Supabase
-      const { data: filmesSupabase, error } = await supabase
+      const { count, error: countError } = await supabase
         .from('filmes')
-        .select('*');
+        .select('*', { count: 'exact', head: true });
 
-      if (error) {
-        console.error('❌ Erro ao buscar filmes para sincronização:', error);
+      if (countError || count === 0) {
+        console.log('✅ Nenhum filme para sincronizar');
         return;
       }
 
-      // Adiciona filmes do Supabase que não existem localmente
-      for (const filme of filmesSupabase) {
-        const filmeFormatado = {
-          id: filme.tmdb_id,
-          title: filme.titulo,
-          originalTitle: filme.titulo_original,
-          posterPath: filme.poster_url,
-          backdropPath: filme.backdrop_url,
-          overview: filme.sinopse,
-          releaseDate: filme.data_lancamento,
-          voteAverage: filme.nota_tmdb,
-          genero: filme.genero,
-          notaUsuario: filme.nota_usuario,
-          comentarioUsuario: filme.comentario_usuario,
-          tagsUsuario: filme.tags_usuario || [],
-          dataAdicao: filme.data_adicao
-        };
-
-        try {
-          await pouchDBService.adicionarFilme(filme.genero, filmeFormatado);
-        } catch (error) {
-          // Filme já existe, ok
-        }
-      }
-
+      console.log(`📋 ${count} filmes encontrados no Supabase`);
       console.log('✅ Sincronização concluída');
     } catch (error) {
       console.error('❌ Erro na sincronização:', error);

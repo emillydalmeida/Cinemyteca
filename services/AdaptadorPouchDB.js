@@ -3,10 +3,21 @@ import servicoHibrido from './ServicoHibrido.js';
 class AdaptadorPouchDB {
   constructor() {
     this.inicializado = false;
-    this.promessaInicializacao = this.inicializar();
+    this.inicializando = false;
+    this.promessaInicializacao = null;
   }
 
   async inicializar() {
+    if (this.inicializado || this.inicializando) {
+      return this.promessaInicializacao;
+    }
+
+    this.inicializando = true;
+    this.promessaInicializacao = this._inicializarInterno();
+    return this.promessaInicializacao;
+  }
+
+  async _inicializarInterno() {
     try {
       console.log('🔄 Inicializando AdaptadorPouchDB híbrido...');
       await servicoHibrido.inicializar();
@@ -17,12 +28,14 @@ class AdaptadorPouchDB {
     } catch (error) {
       console.error('❌ Erro ao inicializar AdaptadorPouchDB:', error);
       throw error;
+    } finally {
+      this.inicializando = false;
     }
   }
 
   async aguardarInicializacao() {
     if (!this.inicializado) {
-      await this.promessaInicializacao;
+      await this.inicializar();
     }
   }
 
