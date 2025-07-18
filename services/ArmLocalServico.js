@@ -4,7 +4,6 @@ class ServicoArmazenamentoLocal {
   static CHAVE_ARMAZENAMENTO = 'cinemyteca_filmes_por_categoria';
 
   static async obterFilmesPorCategoria(categoria) {
-    // Verifica se está no servidor (SSR)
     if (typeof window === 'undefined') {
       console.log('🔍 Rodando no servidor, retornando array vazio');
       return [];
@@ -17,13 +16,11 @@ class ServicoArmazenamentoLocal {
       return filmes;
     } catch (error) {
       console.error('❌ Erro ao carregar filmes:', error);
-      // Retorna array vazio em vez de lançar erro
       return [];
     }
   }
 
   static async adicionarFilmeACategoria(categoria, dadosFilme) {
-    // Verifica se está no servidor (SSR)
     if (typeof window === 'undefined') {
       throw new Error('Não é possível adicionar filmes no servidor');
     }
@@ -50,7 +47,6 @@ class ServicoArmazenamentoLocal {
   }
 
   static async verificarSeFilmeExiste(categoria, filmeId) {
-    // Verifica se está no servidor (SSR)
     if (typeof window === 'undefined') {
       console.log('🔍 Rodando no servidor, retornando false');
       return false;
@@ -68,7 +64,7 @@ class ServicoArmazenamentoLocal {
     try {
       const sucesso = await adaptadorPouchDB.removerFilme(categoria, filmeId);
       if (sucesso) {
-        console.log('✅ Filme removido do PouchDB');
+        console.log('✅ Filme removido com sucesso');
       }
       return sucesso;
     } catch (error) {
@@ -129,7 +125,6 @@ class ServicoArmazenamentoLocal {
     }
   }
 
-  // Obter estatísticas dos filmes
   static async obterEstatisticas() {
     try {
       const filmesAssistidos = await adaptadorPouchDB.obterTodosFilmes() || {};
@@ -145,7 +140,6 @@ class ServicoArmazenamentoLocal {
         };
       }
       
-      // Calcular nota média - verificar diferentes campos de nota
       const notasValidas = filmes.filter(f => {
         const nota = f.notaUsuario || f.nota || f.rating;
         return nota && nota > 0;
@@ -155,7 +149,6 @@ class ServicoArmazenamentoLocal {
         ? (notasValidas.reduce((a, b) => a + b, 0) / notasValidas.length).toFixed(1)
         : 0;
       
-      // Contar por gênero
       const porGenero = {};
       Object.entries(filmesAssistidos).forEach(([genero, filmes]) => {
         if (filmes.length > 0) {

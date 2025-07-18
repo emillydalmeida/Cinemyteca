@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useRef } from 'react';
 import Notificacao from './Notificacao';
+import { useIsClient } from '../hooks/useIsClient';
 
 const NotificacaoContext = createContext();
 
@@ -13,9 +14,13 @@ export const useNotificacao = () => {
 
 export function NotificacaoProvider({ children }) {
   const [notificacoes, setNotificacoes] = useState([]);
+  const isClient = useIsClient();
+  const contadorRef = useRef(0);
 
   const adicionarNotificacao = (mensagem, tipo = 'info', duracao = 4000) => {
-    const id = Date.now() + Math.random();
+    if (!isClient) return;
+    
+    const id = ++contadorRef.current;
     const novaNotificacao = {
       id,
       mensagem,

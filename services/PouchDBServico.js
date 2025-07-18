@@ -176,16 +176,30 @@ class PouchDBServico {
         endkey: `${genero}_\ufff0`
       });
       
-      const filmeDoc = resultado.rows
-        .map(row => row.doc)
-        .find(doc => doc.genero === genero && (doc.id === filmeId || doc.idLocal === filmeId));
+      const documentos = resultado.rows.map(row => row.doc);
+      
+      const filmeIdStr = String(filmeId);
+      const filmeIdNum = Number(filmeId);
+      
+      const filmeDoc = documentos.find(doc => {
+        // Verifica se é o gênero correto
+        if (doc.genero !== genero) return false;
+        
+        // Compara com diferentes tipos e campos
+        const matchId = doc.id === filmeId || String(doc.id) === filmeIdStr || Number(doc.id) === filmeIdNum;
+        const matchIdLocal = doc.idLocal === filmeId || String(doc.idLocal) === filmeIdStr || Number(doc.idLocal) === filmeIdNum;
+        
+        return matchId || matchIdLocal;
+      });
       
       if (filmeDoc) {
         await this.bancoLocal.remove(filmeDoc);
-        console.log('✅ Filme removido');
+        console.log('✅ Filme removido com sucesso');
         return true;
+      } else {
+        console.log('❌ Filme não encontrado para remoção');
+        return false;
       }
-      return false;
     } catch (error) {
       console.error('❌ Erro ao remover filme:', error);
       return false;
@@ -433,7 +447,6 @@ class PouchDBServico {
   }
 
   async verificarSeFilmeExiste(genero, filmeId) {
-    // Verifica se está no servidor (SSR)
     if (typeof window === 'undefined') {
       console.log('🔍 Rodando no servidor, retornando false');
       return false;

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import adaptadorPouchDB from '../services/AdaptadorPouchDB';
+import { useIsClient } from '../hooks/useIsClient';
 
 export default function StatusSincronizacao() {
   const [status, setStatus] = useState({
@@ -7,8 +8,11 @@ export default function StatusSincronizacao() {
     supabase: false,
     modo: 'carregando'
   });
+  const isClient = useIsClient();
 
   useEffect(() => {
+    if (!isClient) return;
+
     const verificarStatus = () => {
       try {
         const statusAtual = adaptadorPouchDB.obterStatus();
@@ -23,9 +27,9 @@ export default function StatusSincronizacao() {
     const interval = setInterval(verificarStatus, 5000);
     
     return () => clearInterval(interval);
-  }, []);
+  }, [isClient]);
 
-  if (typeof window === 'undefined') {
+  if (!isClient) {
     return null;
   }
 

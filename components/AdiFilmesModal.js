@@ -137,7 +137,7 @@ export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdici
                     onClick={() => selecionarFilme(filme)}
                   >
                     <img
-                      src={filme.posterPath || '/assets/no-image.png'}
+                      src={filme.posterPath || '/assets/no-image.svg'}
                       alt={filme.title}
                       className={styles.resultPoster}
                     />
@@ -155,7 +155,7 @@ export default function ModalAdicionarFilme({ estaAberto, aoFechar, aoFilmeAdici
             <div className={styles.selectedMovie}>
               <div className={styles.movieInfo}>
                 <img
-                  src={filmeSelecionado.posterPath || '/assets/no-image.png'}
+                  src={filmeSelecionado.posterPath || '/assets/no-image.svg'}
                   alt={filmeSelecionado.title}
                   className={styles.selectedPoster}
                 />

@@ -5,6 +5,7 @@ import { useNotificacao } from '../../components/NotificacaoProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
 import ServicoArmazenamentoLocal from '../../services/ArmLocalServico';
+import { useIsClient } from '../../hooks/useIsClient';
 import styles from '../../styles/Categoria.module.css';
 
 const obterNomeGenero = (genero) => {
@@ -33,32 +34,32 @@ export default function PaginaGenero() {
   const [filmesFiltrados, setFilmesFiltrados] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const isClient = useIsClient();
 
   useEffect(() => {
-    console.log('🔍 PouchDB disponível:', !!window.PouchDB);
-    console.log('🔍 PouchDBFind disponível:', !!window.PouchDBFind);
-  }, []);
+    if (isClient && typeof window !== 'undefined') {
+      console.log('🔍 PouchDB disponível:', !!window.PouchDB);
+      console.log('🔍 PouchDBFind disponível:', !!window.PouchDBFind);
+    }
+  }, [isClient]);
 
   useEffect(() => {
-    if (genero) {
+    if (genero && isClient) {
       carregarFilmesAssistidos();
     }
-  }, [genero]);
+  }, [genero, isClient]);
 
   const carregarFilmesAssistidos = async () => {
     try {
       setCarregando(true);
       setErro(null);
-      console.log('🔄 Carregando filmes para gênero:', genero);
       
       const filmes = await ServicoArmazenamentoLocal.obterFilmesPorCategoria(genero);
-      console.log('✅ Filmes carregados:', filmes.length);
       
       setFilmesAssistidos(filmes);
       setFilmesFiltrados(filmes);
     } catch (error) {
       console.error('❌ Erro ao carregar filmes:', error);
-      console.error('❌ Stack trace:', error.stack);
       setErro('Erro ao carregar filmes. Tente recarregar a página.');
       setFilmesAssistidos([]);
       setFilmesFiltrados([]);
@@ -76,9 +77,15 @@ export default function PaginaGenero() {
   const removerFilme = async (idLocal) => {
     if (confirm('Tem certeza que deseja remover este filme?')) {
       try {
-        await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, idLocal);
-        await carregarFilmesAssistidos();
-        mostrarSucesso('Filme removido com sucesso!');
+        const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, idLocal);
+        
+        if (sucesso) {
+          // Recarrega os filmes após remoção
+          await carregarFilmesAssistidos();
+          mostrarSucesso('Filme removido com sucesso!');
+        } else {
+          mostrarErro('Falha ao remover filme. Tente novamente.');
+        }
       } catch (error) {
         console.error('❌ Erro ao remover filme:', error);
         mostrarErro('Erro ao remover filme. Tente novamente.');
@@ -102,8 +109,14 @@ export default function PaginaGenero() {
     return estrelas;
   };
 
-  if (!genero) {
-    return <div className={styles.container}>Carregando...</div>;
+  if (!isClient || !genero) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.carregando}>
+          <p>Carregando...</p>
+        </div>
+      </div>
+    );
   }
 
   if (carregando) {
@@ -185,7 +198,7 @@ export default function PaginaGenero() {
             {filmesFiltrados.map((filme) => (
               <div key={filme.idLocal} className={styles.cardFilmeAssistido}>
                 <img 
-                  src={filme.posterPath || '/assets/no-image.png'} 
+                  src={filme.posterPath || '/assets/no-image.svg'} 
                   alt={filme.title}
                   className={styles.posterAssistido}
                 />
