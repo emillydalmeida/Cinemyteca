@@ -18,10 +18,8 @@ export default function StatusSincronizacao() {
       }
     };
 
-    // Verifica imediatamente
     verificarStatus();
     
-    // Verifica a cada 5 segundos
     const interval = setInterval(verificarStatus, 5000);
     
     return () => clearInterval(interval);
@@ -44,9 +42,9 @@ export default function StatusSincronizacao() {
   };
 
   const getStatusColor = () => {
-    if (status.modo === 'híbrido') return '#4ade80'; // Verde
-    if (status.modo === 'local') return '#fbbf24'; // Amarelo
-    return '#6b7280'; // Cinza
+    if (status.modo === 'híbrido') return '#ffffffff';
+    if (status.modo === 'local') return '#ffffffff';
+    return '#6b7280'; 
   };
 
   return (
@@ -54,16 +52,16 @@ export default function StatusSincronizacao() {
       position: 'fixed',
       bottom: '20px',
       right: '20px',
-      background: 'rgba(0,0,0,0.8)',
+      background: 'rgba(255, 255, 255, 0.1)',
       color: 'white',
       padding: '8px 12px',
-      borderRadius: '20px',
+      borderRadius: '8px',
       fontSize: '12px',
       zIndex: 1000,
       display: 'flex',
       alignItems: 'center',
       gap: '6px',
-      border: `1px solid ${getStatusColor()}`,
+      border: `1px dashed white`,
       backdropFilter: 'blur(10px)'
     }}>
       <span style={{ fontSize: '14px' }}>{getStatusIcon()}</span>
