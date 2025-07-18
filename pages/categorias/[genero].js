@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useNotificacao } from '../../components/NotificacaoProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
+import DebugPouchDB from '../../components/DebugPouchDB';
 import ServicoArmazenamentoLocal from '../../services/ArmLocalServico';
 import styles from '../../styles/Categoria.module.css';
 
@@ -31,6 +32,8 @@ export default function PaginaGenero() {
   const [modalAberto, setModalAberto] = useState(false);
   const [filmesAssistidos, setFilmesAssistidos] = useState([]);
   const [filmesFiltrados, setFilmesFiltrados] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(null);
 
   useEffect(() => {
     console.log('🔍 PouchDB disponível:', !!window.PouchDB);
@@ -45,16 +48,23 @@ export default function PaginaGenero() {
 
   const carregarFilmesAssistidos = async () => {
     try {
+      setCarregando(true);
+      setErro(null);
       console.log('🔄 Carregando filmes para gênero:', genero);
+      
       const filmes = await ServicoArmazenamentoLocal.obterFilmesPorCategoria(genero);
       console.log('✅ Filmes carregados:', filmes.length);
+      
       setFilmesAssistidos(filmes);
       setFilmesFiltrados(filmes);
     } catch (error) {
       console.error('❌ Erro ao carregar filmes:', error);
       console.error('❌ Stack trace:', error.stack);
+      setErro('Erro ao carregar filmes. Tente recarregar a página.');
       setFilmesAssistidos([]);
       setFilmesFiltrados([]);
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -97,8 +107,43 @@ export default function PaginaGenero() {
     return <div className={styles.container}>Carregando...</div>;
   }
 
+  if (carregando) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.carregando}>
+          <p>Carregando filmes...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (erro) {
+    return (
+      <div className={styles.container}>
+        <Link href="/" className={`${styles.botaoPadrao} ${styles.botaoVoltar}`}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="m12 8-4 4 4 4"/>
+          <path d="M16 12H8"/>
+          </svg>
+          Voltar
+        </Link>
+        <div className={styles.erro}>
+          <p>{erro}</p>
+          <button 
+            onClick={carregarFilmesAssistidos}
+            className={styles.botaoPadrao}
+          >
+            Tentar novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
+      <DebugPouchDB />
       <Link href="/" className={`${styles.botaoPadrao} ${styles.botaoVoltar}`}>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>
@@ -127,9 +172,16 @@ export default function PaginaGenero() {
         Adicionar Filme
       </button>
 
-
-
-      {filmesFiltrados.length > 0 && (
+      {filmesFiltrados.length === 0 ? (
+        <div className={styles.secaoVazia}>
+          <p className={styles.mensagemVazia}>
+            Nenhum filme encontrado para {obterNomeGenero(genero)}.
+          </p>
+          <p className={styles.submensagemVazia}>
+            Adicione seu primeiro filme clicando no botão acima!
+          </p>
+        </div>
+      ) : (
         <div className={styles.secaoAssistidos}>
           <div className={styles.filmesAssistidos}>
             {filmesFiltrados.map((filme) => (

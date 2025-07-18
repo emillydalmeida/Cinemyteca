@@ -4,10 +4,20 @@ class ServicoArmazenamentoLocal {
   static CHAVE_ARMAZENAMENTO = 'cinemyteca_filmes_por_categoria';
 
   static async obterFilmesPorCategoria(categoria) {
+    // Verifica se está no servidor (SSR)
+    if (typeof window === 'undefined') {
+      console.log('🔍 Rodando no servidor, retornando array vazio');
+      return [];
+    }
+
     try {
-      return await adaptadorPouchDB.obterFilmesPorGenero(categoria);
+      console.log(`🔄 Buscando filmes para categoria: ${categoria}`);
+      const filmes = await adaptadorPouchDB.obterFilmesPorGenero(categoria);
+      console.log(`✅ Encontrados ${filmes.length} filmes para categoria ${categoria}`);
+      return filmes;
     } catch (error) {
       console.error('❌ Erro ao carregar filmes:', error);
+      // Retorna array vazio em vez de lançar erro
       return [];
     }
   }

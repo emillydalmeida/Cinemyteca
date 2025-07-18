@@ -295,3 +295,33 @@
     gap: 1rem;
   }
 }
+
+/* Estados da aplicação */
+.carregando, .erro, .secaoVazia {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: white;
+}
+
+.carregando p {
+  font-size: 1.2rem;
+  color: #ffadc3;
+}
+
+.erro p {
+  font-size: 1.1rem;
+  color: #ff6b6b;
+  margin-bottom: 1rem;
+}
+
+.mensagemVazia {
+  font-size: 1.3rem;
+  color: #ffadc3;
+  margin-bottom: 0.5rem;
+}
+
+.submensagemVazia {
+  font-size: 1rem;
+  color: #bbb;
+  opacity: 0.8;
+}

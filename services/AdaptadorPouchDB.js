@@ -31,8 +31,19 @@ class AdaptadorPouchDB {
   }
 
   async obterFilmesPorGenero(genero) {
-    await this.aguardarInicializacao();
-    return await pouchDBServico.obterFilmesPorGenero(genero);
+    // Verifica se está no servidor (SSR)
+    if (typeof window === 'undefined') {
+      console.log('🔍 Rodando no servidor, retornando array vazio');
+      return [];
+    }
+
+    try {
+      await this.aguardarInicializacao();
+      return await pouchDBServico.obterFilmesPorGenero(genero);
+    } catch (error) {
+      console.error('❌ Erro no AdaptadorPouchDB:', error);
+      return [];
+    }
   }
 
   async adicionarFilme(genero, filme) {

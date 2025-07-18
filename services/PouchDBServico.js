@@ -110,8 +110,17 @@ class PouchDBServico {
   }
 
   async obterFilmesPorGenero(genero) {
+    if (typeof window === 'undefined') {
+      console.log('🔍 Rodando no servidor, retornando array vazio');
+      return [];
+    }
+
     await this.aguardarInicializacao();
     try {
+      if (!this.bancoLocal) {
+        throw new Error('Banco local não está inicializado');
+      }
+
       const resultado = await this.bancoLocal.allDocs({ 
         include_docs: true,
         startkey: `${genero}_`,
@@ -123,16 +132,25 @@ class PouchDBServico {
         .filter(doc => doc.genero === genero)
         .sort((a, b) => (a.title || '').localeCompare(b.title || ''));
       
+      console.log(`✅ Encontrados ${filmes.length} filmes para gênero ${genero}`);
       return filmes;
     } catch (error) {
       console.error('❌ Erro ao obter filmes por gênero:', error);
-      return [];
+      throw new Error('Erro ao buscar filmes');
     }
   }
 
   async adicionarFilme(genero, filme) {
+    if (typeof window === 'undefined') {
+      throw new Error('Não é possível adicionar filmes no servidor');
+    }
+
     await this.aguardarInicializacao();
     try {
+      if (!this.bancoLocal) {
+        throw new Error('Banco local não está inicializado');
+      }
+
       const documento = {
         _id: `${genero}_${filme.id}_${Date.now()}`,
         genero: genero,
@@ -297,7 +315,6 @@ class PouchDBServico {
     try {
       console.log('🔄 Iniciando migração do localStorage...');
       
-      // Garantir que o banco está inicializado antes da migração
       await this.aguardarInicializacao();
       
       if (!this.bancoLocal) {
