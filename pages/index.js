@@ -2,12 +2,14 @@ import Link from "next/link"
 import { useState } from 'react';
 import { useNotificacao } from '../components/NotificacaoProvider';
 import StatusSincronizacao from '../components/StatusSincronizacao';
+import ModalConfirmacao from '../components/ModalConfirmacao';
 import ServicoArmazenamentoLocal from '../services/ArmLocalServico';
 import servicoSupabase from '../services/SupabaseServico';
 import styles from "../styles/Home.module.css"
 
 export default function Home() {
     const { mostrarSucesso, mostrarErro, mostrarInfo } = useNotificacao();
+    const [modalLimparDuplicatas, setModalLimparDuplicatas] = useState(false);
 
     const mostrarEstatisticas = async () => {
         try {
@@ -27,20 +29,22 @@ export default function Home() {
         }
     };
 
-    const limparDuplicatas = async () => {
-        if (confirm('Tem certeza que deseja limpar duplicatas? Esta ação não pode ser desfeita.')) {
-            try {
-                mostrarInfo('Limpando duplicatas... Isso pode levar alguns segundos.');
-                const sucesso = await servicoSupabase.limparDuplicatas();
-                if (sucesso) {
-                    mostrarSucesso('Duplicatas removidas com sucesso!');
-                } else {
-                    mostrarErro('Erro ao limpar duplicatas. Verifique a conexão.');
-                }
-            } catch (error) {
-                console.error('❌ Erro ao limpar duplicatas:', error);
-                mostrarErro('Erro ao limpar duplicatas. Tente novamente.');
+    const abrirModalLimparDuplicatas = () => {
+        setModalLimparDuplicatas(true);
+    };
+
+    const confirmarLimparDuplicatas = async () => {
+        try {
+            mostrarInfo('Limpando duplicatas... Isso pode levar alguns segundos.');
+            const sucesso = await servicoSupabase.limparDuplicatas();
+            if (sucesso) {
+                mostrarSucesso('Duplicatas removidas com sucesso!');
+            } else {
+                mostrarErro('Erro ao limpar duplicatas. Verifique a conexão.');
             }
+        } catch (error) {
+            console.error('❌ Erro ao limpar duplicatas:', error);
+            mostrarErro('Erro ao limpar duplicatas. Tente novamente.');
         }
     };
 
@@ -65,7 +69,7 @@ export default function Home() {
 
                 <button 
                     className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
-                    onClick={limparDuplicatas}
+                    onClick={abrirModalLimparDuplicatas}
                     title="Limpar filmes duplicados"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -132,6 +136,17 @@ export default function Home() {
             <footer>
                 <p>&copy; 2025 Cinemyteca. Desenvolvido por Emilly Efanny.</p>
             </footer>
+
+            <ModalConfirmacao
+                isOpen={modalLimparDuplicatas}
+                onClose={() => setModalLimparDuplicatas(false)}
+                onConfirm={confirmarLimparDuplicatas}
+                titulo="Limpar Duplicatas"
+                mensagem="Tem certeza que deseja limpar todas as duplicatas? Esta ação irá remover filmes duplicados do banco de dados e não pode ser desfeita."
+                textoConfirmar="Sim, Limpar"
+                textoCancelar="Cancelar"
+                tipo="perigoso"
+            />
         </>
     );
 }

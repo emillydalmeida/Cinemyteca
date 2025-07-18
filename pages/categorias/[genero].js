@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useNotificacao } from '../../components/NotificacaoProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
+import ModalConfirmacao from '../../components/ModalConfirmacao';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
 import ServicoArmazenamentoLocal from '../../services/ArmLocalServico';
 import { useIsClient } from '../../hooks/useIsClient';
@@ -30,6 +31,7 @@ export default function PaginaGenero() {
   const { genero } = router.query;
   const { mostrarSucesso, mostrarErro } = useNotificacao();
   const [modalAberto, setModalAberto] = useState(false);
+  const [modalRemover, setModalRemover] = useState({ isOpen: false, filme: null });
   const [filmesAssistidos, setFilmesAssistidos] = useState([]);
   const [filmesFiltrados, setFilmesFiltrados] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -74,33 +76,40 @@ export default function PaginaGenero() {
     mostrarSucesso(`${filme.title} foi adicionado à categoria ${obterNomeGenero(genero)}!`);
   };
 
-  const removerFilme = async (idLocal) => {
-    if (confirm('Tem certeza que deseja remover este filme?')) {
-      try {
-        // Encontra o filme para obter o ID do TMDB
-        const filme = filmesAssistidos.find(f => f.idLocal === idLocal);
-        if (!filme) {
-          mostrarErro('Filme não encontrado.');
-          return;
-        }
+  const abrirModalRemover = (filme) => {
+    setModalRemover({ isOpen: true, filme });
+  };
 
-        console.log(`🗑️ Removendo filme: ${filme.title} (TMDB ID: ${filme.id}, Local ID: ${idLocal})`);
+  const confirmarRemocaoFilme = async () => {
+    const { filme } = modalRemover;
+    if (!filme) return;
+
+    try {
+      console.log(`🗑️ Removendo filme: ${filme.title} (TMDB ID: ${filme.id}, Local ID: ${filme.idLocal})`);
+      
+      const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, filme.id);
+      
+      if (sucesso) {
+        await new Promise(resolve => setTimeout(resolve, 500));
         
-        const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, filme.id);
-        
-        if (sucesso) {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          await carregarFilmesAssistidos();
-          mostrarSucesso('Filme removido com sucesso!');
-        } else {
-          mostrarErro('Falha ao remover filme. Tente novamente.');
-        }
-      } catch (error) {
-        console.error('❌ Erro ao remover filme:', error);
-        mostrarErro('Erro ao remover filme. Tente novamente.');
+        await carregarFilmesAssistidos();
+        mostrarSucesso('Filme removido com sucesso!');
+      } else {
+        mostrarErro('Falha ao remover filme. Tente novamente.');
       }
+    } catch (error) {
+      console.error('❌ Erro ao remover filme:', error);
+      mostrarErro('Erro ao remover filme. Tente novamente.');
     }
+  };
+
+  const removerFilme = async (idLocal) => {
+    const filme = filmesAssistidos.find(f => f.idLocal === idLocal);
+    if (!filme) {
+      mostrarErro('Filme não encontrado.');
+      return;
+    }
+    abrirModalRemover(filme);
   };
 
   const renderizarEstrelas = (nota) => {
@@ -264,6 +273,17 @@ export default function PaginaGenero() {
       <NavegacaoFlutuante 
         filmesAssistidos={filmesAssistidos}
         aoFiltrarFilmes={setFilmesFiltrados}
+      />
+
+      <ModalConfirmacao
+        isOpen={modalRemover.isOpen}
+        onClose={() => setModalRemover({ isOpen: false, filme: null })}
+        onConfirm={confirmarRemocaoFilme}
+        titulo="Remover Filme"
+        mensagem={`Tem certeza que deseja remover "${modalRemover.filme?.title}" da sua lista? Esta ação não pode ser desfeita.`}
+        textoConfirmar="Sim, Remover"
+        textoCancelar="Cancelar"
+        tipo="perigoso"
       />
     </div>
   );
