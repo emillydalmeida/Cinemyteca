@@ -31,8 +31,10 @@ export default function Home() {
 
     const debugBancoDados = async () => {
         try {
-            console.log('🔍 Iniciando debug do banco de dados...');
+            console.log('🔍 Iniciando debug COMPLETO do banco de dados...');
             
+            // 1. Verifica dados do ArmLocalServico
+            console.log('📊 === DADOS DO ArmLocalServico ===');
             const filmesAdaptador = await ServicoArmazenamentoLocal.obterTodosFilmes();
             console.log('📊 Filmes do Adaptador:', filmesAdaptador);
             
@@ -45,10 +47,80 @@ export default function Home() {
                 });
             }
             
-            mostrarInfo('Debug concluído! Verifique o console do navegador.');
+            // 2. Verifica dados diretos do AdaptadorPouchDB
+            console.log('📊 === DADOS DO AdaptadorPouchDB ===');
+            const { default: adaptadorPouchDB } = await import('../services/AdaptadorPouchDB.js');
+            const filmesAdaptadorDireto = await adaptadorPouchDB.obterTodosFilmes();
+            console.log('📊 Filmes do AdaptadorPouchDB:', filmesAdaptadorDireto);
+            
+            // 3. Verifica dados diretos do ServicoHibrido
+            console.log('📊 === DADOS DO ServicoHibrido ===');
+            const { default: servicoHibrido } = await import('../services/ServicoHibrido.js');
+            
+            // Testa cada gênero individualmente
+            const generos = ['acao', 'animacao', 'comedia', 'drama', 'terror', 'suspense', 'romance', 'fantasia', 'ficcao', 'documentario'];
+            for (const genero of generos) {
+                const filmesGenero = await servicoHibrido.obterFilmesPorGenero(genero);
+                if (filmesGenero && filmesGenero.length > 0) {
+                    console.log(`🎭 ServicoHibrido - ${genero}:`, filmesGenero.length, 'filmes');
+                    filmesGenero.forEach((filme, index) => {
+                        console.log(`  ${index + 1}. ${filme.title} (ID: ${filme.id}, Local: ${filme.idLocal})`);
+                    });
+                }
+            }
+            
+            // 4. Verifica estatísticas
+            console.log('📊 === ESTATÍSTICAS ===');
+            const stats = await ServicoArmazenamentoLocal.obterEstatisticas();
+            console.log('📊 Estatísticas:', stats);
+            
+            mostrarInfo('Debug COMPLETO concluído! Verifique o console do navegador.');
         } catch (error) {
             console.error('❌ Erro ao fazer debug:', error);
             mostrarErro('Erro ao fazer debug. Tente novamente.');
+        }
+    };
+
+    const limparTudoCompletamente = async () => {
+        try {
+            mostrarInfo('Limpando TUDO completamente... Isso pode levar alguns segundos.');
+            console.log('🧹 Iniciando limpeza COMPLETA...');
+            
+            // 1. Limpa via ArmLocalServico
+            console.log('🧹 Limpando via ArmLocalServico...');
+            await ServicoArmazenamentoLocal.limparTudo();
+            
+            // 2. Limpa via AdaptadorPouchDB
+            console.log('🧹 Limpando via AdaptadorPouchDB...');
+            const { default: adaptadorPouchDB } = await import('../services/AdaptadorPouchDB.js');
+            await adaptadorPouchDB.limparTudo();
+            
+            // 3. Limpa via PouchDBServico
+            console.log('🧹 Limpando via PouchDBServico...');
+            const { default: pouchDBServico } = await import('../services/PouchDBServico.js');
+            await pouchDBServico.limparTudo();
+            
+            // 4. Limpa localStorage
+            console.log('🧹 Limpando localStorage...');
+            if (typeof window !== 'undefined') {
+                const keys = Object.keys(localStorage);
+                keys.forEach(key => {
+                    if (key.includes('cinemyteca') || key.includes('pouchdb') || key.includes('filme')) {
+                        localStorage.removeItem(key);
+                        console.log(`  🗑️ Removida chave: ${key}`);
+                    }
+                });
+            }
+            
+            // 5. Aguarda um pouco para tudo processar
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            console.log('🎉 Limpeza COMPLETA concluída!');
+            mostrarSucesso('Limpeza COMPLETA concluída! Todos os dados foram removidos.');
+            
+        } catch (error) {
+            console.error('❌ Erro ao limpar tudo:', error);
+            mostrarErro('Erro ao limpar tudo. Tente novamente.');
         }
     };
 
@@ -141,9 +213,18 @@ export default function Home() {
                 <button 
                     className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
                     onClick={debugBancoDados}
-                    title="Debug do banco de dados"
+                    title="Debug completo do banco de dados"
                 >
                     🔍 Debug
+                </button>
+
+                <button 
+                    className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
+                    onClick={limparTudoCompletamente}
+                    title="Limpar TUDO completamente"
+                    style={{ backgroundColor: '#ff4757', color: 'white' }}
+                >
+                    🔥 Zerar Tudo
                 </button>
 
                 <button 
