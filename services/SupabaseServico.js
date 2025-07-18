@@ -18,6 +18,7 @@ class ServicoSupabase {
     this.inicializado = false;
     this.tentativasConexao = 0;
     this.maxTentativas = 3;
+    this.client = supabase; 
   }
 
   async verificarConexao() {

@@ -180,20 +180,22 @@ export default function PaginaGenero() {
         Filmes de {obterNomeGenero(genero)}
       </p>
 
-      <button 
-        className={styles.botaoFlutuante}
-        onClick={() => setModalAberto(true)}
-        title="Adicionar filme a esta categoria"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-list-filter-plus-icon lucide-list-filter-plus">
-          <path d="M10 18h4"/>
-          <path d="M11 6H3"/>
-          <path d="M15 6h6"/>
-          <path d="M18 9V3"/>
-          <path d="M7 12h8"/>
-        </svg>
-        Adicionar Filme
-      </button>
+      {isAdmin && (
+        <button 
+          className={styles.botaoFlutuante}
+          onClick={() => setModalAberto(true)}
+          title="Adicionar filme a esta categoria"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-list-filter-plus-icon lucide-list-filter-plus">
+            <path d="M10 18h4"/>
+            <path d="M11 6H3"/>
+            <path d="M15 6h6"/>
+            <path d="M18 9V3"/>
+            <path d="M7 12h8"/>
+          </svg>
+          Adicionar Filme
+        </button>
+      )}
 
       {filmesFiltrados.length === 0 ? (
         <div className={styles.secaoVazia}>
@@ -237,19 +239,21 @@ export default function PaginaGenero() {
                     <p className={styles.resenha}>"{filme.comentarioUsuario}"</p>
                   )}
                 </div>
-                <button
-                  onClick={() => removerFilme(filme.id)}
-                  className={styles.botaoRemover}
-                  title="Remover filme"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash2-icon lucide-trash-2">
-                    <path d="M10 11v6"/>
-                    <path d="M14 11v6"/>
-                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
-                    <path d="M3 6h18"/>
-                    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                  </svg>
-                </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => removerFilme(filme.id)}
+                    className={styles.botaoRemover}
+                    title="Remover filme"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash2-icon lucide-trash-2">
+                      <path d="M10 11v6"/>
+                      <path d="M14 11v6"/>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>
+                      <path d="M3 6h18"/>
+                      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                  </button>
+                )}
               </div>
             ))}
           </div>

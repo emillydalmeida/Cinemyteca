@@ -1,13 +1,17 @@
 import Link from "next/link"
 import { useState } from 'react';
 import { useNotificacao } from '../components/NotificacaoProvider';
+import { useAuth } from '../components/AuthProvider';
 import ModalConfirmacao from '../components/ModalConfirmacao';
+import ModalLogin from '../components/ModalLogin';
 import servicoFilmes from '../services/ServicoFilmes';
 import styles from "../styles/Home.module.css"
 
 export default function Home() {
     const { mostrarSucesso, mostrarErro, mostrarInfo } = useNotificacao();
+    const { usuario, isAdmin, logout } = useAuth();
     const [modalLimparDuplicatas, setModalLimparDuplicatas] = useState(false);
+    const [modalLogin, setModalLogin] = useState(false);
 
     const mostrarEstatisticas = async () => {
         try {
@@ -46,6 +50,15 @@ export default function Home() {
         }
     };
 
+    const handleLogout = async () => {
+        const resultado = await logout();
+        if (resultado.sucesso) {
+            mostrarSucesso('Logout realizado com sucesso! 👋');
+        } else {
+            mostrarErro('Erro ao sair');
+        }
+    };
+
     return (
         <>
             <div className={styles.botoesUtilidades}>
@@ -63,28 +76,63 @@ export default function Home() {
                     Estatísticas
                 </button>
 
-                <button 
-                    className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
-                    onClick={abrirModalLimparDuplicatas}
-                    title="Limpar filmes duplicados"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                        <line x1="10" y1="11" x2="10" y2="17"/>
-                        <line x1="14" y1="11" x2="14" y2="17"/>
-                    </svg>
-                    Limpar Duplicatas
-                </button>
+                {isAdmin && (
+                    <button 
+                        className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
+                        onClick={abrirModalLimparDuplicatas}
+                        title="Limpar filmes duplicados"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 6h18"/>
+                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                            <line x1="10" y1="11" x2="10" y2="17"/>
+                            <line x1="14" y1="11" x2="14" y2="17"/>
+                        </svg>
+                        Limpar Duplicatas
+                    </button>
+                )}
+
+                {isAdmin ? (
+                    <button 
+                        className={`${styles.botaoPadrao} ${styles.botaoSair}`}
+                        onClick={handleLogout}
+                        title="Sair da conta admin"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16,17 21,12 16,7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Sair
+                    </button>
+                ) : (
+                    <button 
+                        className={`${styles.botaoPadrao} ${styles.botaoLogin}`}
+                        onClick={() => setModalLogin(true)}
+                        title="Entrar como admin"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                            <polyline points="10,17 15,12 10,7"/>
+                            <line x1="15" y1="12" x2="3" y2="12"/>
+                        </svg>
+                        Admin
+                    </button>
+                )}
             </div>
 
             <header>
                 <h1>Bem-vindo  à  Cin<span className={styles.destaque}>emy</span>teca</h1>
+                {!isAdmin && (
+                    <p className={styles.subtitulo}>
+                        💡 Portfólio público de filmes assistidos por Emilly Efanny
+                    </p>
+                )}
             </header>
 
             <main>
-                <p> Escolha um gênero</p>
+                <p>{isAdmin ? 'Escolha um gênero para gerenciar' : 'Explore os filmes por gênero'}</p>
                 <nav className={styles.menuGeneros}>
                     <Link href="/categorias/acao" className={styles.generos}>
                         <img src="/assets/acao.webp" />
@@ -142,6 +190,11 @@ export default function Home() {
                 textoConfirmar="Sim, Limpar"
                 textoCancelar="Cancelar"
                 tipo="perigoso"
+            />
+
+            <ModalLogin
+                isOpen={modalLogin}
+                onClose={() => setModalLogin(false)}
             />
         </>
     );
