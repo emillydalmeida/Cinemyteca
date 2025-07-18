@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { useNotificacao } from '../../components/NotificacaoProvider';
 import ModalAdicionarFilme from '../../components/AdiFilmesModal';
 import NavegacaoFlutuante from '../../components/NavegacaoFlutuante';
-import DebugPouchDB from '../../components/DebugPouchDB';
 import ServicoArmazenamentoLocal from '../../services/ArmLocalServico';
 import styles from '../../styles/Categoria.module.css';
 
@@ -143,7 +142,6 @@ export default function PaginaGenero() {
 
   return (
     <div className={styles.container}>
-      <DebugPouchDB />
       <Link href="/" className={`${styles.botaoPadrao} ${styles.botaoVoltar}`}>
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/>
