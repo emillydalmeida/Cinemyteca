@@ -29,7 +29,7 @@ Uma aplicação web para gerenciar sua coleção pessoal de filmes assistidos, c
 
 1. **Acesse**: Visite [cinemyteca.vercel.app](https://cinemyteca.vercel.app)
 2. **Explore**: Navegue pelas categorias de filmes
-3. **Adicione**: Clique no + para adicionar um filme
+3. **Adicione**: Clique no "Adicionar Filme" para adicionar um filme
 4. **Busque**: Digite o nome do filme no modal de busca
 5. **Avalie**: Adicione notas de 1-10 e comentários pessoais
 6. **Estatísticas**: Veja suas estatísticas na página inicial
@@ -66,6 +66,23 @@ npm run dev
 2. Crie uma branch (`git checkout -b feature/MinhaFeature`)
 3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
 4. Abra um Pull Request
+
+## 📄 Licença
+
+Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+### O que isso significa?
+
+✅ **Você pode:**
+- ✨ Usar comercialmente
+- 🔧 Modificar o código
+- 📦 Distribuir
+- 🔒 Usar privadamente
+- 📋 Sublicenciar
+
+⚠️ **Condições:**
+- 📝 Incluir a licença e copyright nos arquivos
+- 🛡️ Uso por sua conta e risco
 
 ---
 

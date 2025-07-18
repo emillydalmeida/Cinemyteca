@@ -2,6 +2,14 @@
   "name": "cinemyteca",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "author": "Emilly Efanny",
+  "description": "Uma aplicação web para gerenciar sua coleção pessoal de filmes assistidos",
+  "homepage": "https://cinemyteca.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/emillydalmeida/Cinemyteca.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
