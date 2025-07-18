@@ -153,6 +153,24 @@ class ServicoSupabase {
     }
 
     try {
+      console.log(`🗑️ Tentando remover do Supabase - Gênero: ${genero}, ID: ${filmeId}`);
+      
+      // Primeiro verifica se o filme existe
+      const { data: filmeExistente, error: erroConsulta } = await supabase
+        .from('filmes')
+        .select('id, tmdb_id, titulo')
+        .eq('genero', genero)
+        .eq('tmdb_id', filmeId)
+        .single();
+
+      if (erroConsulta) {
+        console.log('🔍 Filme não encontrado no Supabase para remoção:', erroConsulta.message);
+        return true; // Considera sucesso se não existe
+      }
+
+      console.log('🎬 Filme encontrado no Supabase:', filmeExistente);
+
+      // Agora remove o filme
       const { error } = await supabase
         .from('filmes')
         .delete()

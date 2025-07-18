@@ -77,7 +77,16 @@ export default function PaginaGenero() {
   const removerFilme = async (idLocal) => {
     if (confirm('Tem certeza que deseja remover este filme?')) {
       try {
-        const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, idLocal);
+        // Encontra o filme para obter o ID do TMDB
+        const filme = filmesAssistidos.find(f => f.idLocal === idLocal);
+        if (!filme) {
+          mostrarErro('Filme não encontrado.');
+          return;
+        }
+
+        console.log(`🗑️ Removendo filme: ${filme.title} (TMDB ID: ${filme.id}, Local ID: ${idLocal})`);
+        
+        const sucesso = await ServicoArmazenamentoLocal.removerFilmeDaCategoria(genero, filme.id);
         
         if (sucesso) {
           await new Promise(resolve => setTimeout(resolve, 500));

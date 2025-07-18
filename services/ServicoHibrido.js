@@ -88,6 +88,7 @@ class ServicoHibrido {
     await this.inicializar();
 
     try {
+      console.log(`🗑️ ServicoHibrido: Removendo filme ID ${filmeId} do gênero ${genero}`);
       let sucessoSupabase = true;
       
       if (this.supabaseDisponivel) {
@@ -102,7 +103,10 @@ class ServicoHibrido {
       
       const sucessoLocal = await pouchDBServico.removerFilme(genero, filmeId);
       
-      return sucessoSupabase || sucessoLocal;
+      const resultado = sucessoSupabase || sucessoLocal;
+      console.log(`📊 Resultado da remoção: Supabase=${sucessoSupabase}, Local=${sucessoLocal}, Final=${resultado}`);
+      
+      return resultado;
     } catch (error) {
       console.error('❌ Erro ao remover filme:', error);
       return false;
