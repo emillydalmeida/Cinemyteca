@@ -62,8 +62,19 @@ class AdaptadorPouchDB {
   }
 
   async verificarSeFilmeExiste(genero, filmeId) {
-    await this.aguardarInicializacao();
-    return await pouchDBServico.verificarSeFilmeExiste(genero, filmeId);
+    // Verifica se está no servidor (SSR)
+    if (typeof window === 'undefined') {
+      console.log('🔍 Rodando no servidor, retornando false');
+      return false;
+    }
+
+    try {
+      await this.aguardarInicializacao();
+      return await pouchDBServico.verificarSeFilmeExiste(genero, filmeId);
+    } catch (error) {
+      console.error('❌ Erro no AdaptadorPouchDB:', error);
+      return false;
+    }
   }
 
   

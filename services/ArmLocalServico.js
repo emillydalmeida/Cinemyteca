@@ -23,6 +23,11 @@ class ServicoArmazenamentoLocal {
   }
 
   static async adicionarFilmeACategoria(categoria, dadosFilme) {
+    // Verifica se está no servidor (SSR)
+    if (typeof window === 'undefined') {
+      throw new Error('Não é possível adicionar filmes no servidor');
+    }
+
     try {
       const filmeComId = {
         ...dadosFilme,
@@ -45,6 +50,12 @@ class ServicoArmazenamentoLocal {
   }
 
   static async verificarSeFilmeExiste(categoria, filmeId) {
+    // Verifica se está no servidor (SSR)
+    if (typeof window === 'undefined') {
+      console.log('🔍 Rodando no servidor, retornando false');
+      return false;
+    }
+
     try {
       return await adaptadorPouchDB.verificarSeFilmeExiste(categoria, filmeId);
     } catch (error) {

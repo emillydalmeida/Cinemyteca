@@ -433,8 +433,18 @@ class PouchDBServico {
   }
 
   async verificarSeFilmeExiste(genero, filmeId) {
+    // Verifica se está no servidor (SSR)
+    if (typeof window === 'undefined') {
+      console.log('🔍 Rodando no servidor, retornando false');
+      return false;
+    }
+
     await this.aguardarInicializacao();
     try {
+      if (!this.bancoLocal) {
+        throw new Error('Banco local não está inicializado');
+      }
+
       const resultado = await this.bancoLocal.allDocs({ 
         include_docs: true,
         startkey: `${genero}_`,
