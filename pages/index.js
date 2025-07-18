@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { useState } from 'react';
 import { useNotificacao } from '../components/NotificacaoProvider';
-import StatusSincronizacao from '../components/StatusSincronizacao';
 import ModalConfirmacao from '../components/ModalConfirmacao';
 import servicoFilmes from '../services/ServicoFilmes';
 import styles from "../styles/Home.module.css"
@@ -49,7 +48,6 @@ export default function Home() {
 
     return (
         <>
-            <StatusSincronizacao />
             <div className={styles.botoesUtilidades}>
                 <button 
                     className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
