@@ -141,12 +141,19 @@ class AdaptadorPouchDB {
 
   async obterTodosDados() {
     await this.aguardarInicializacao();
-    return await pouchDBServico.obterTodosDados();
+    return await servicoHibrido.obterTodosDados ? 
+      await servicoHibrido.obterTodosDados() : 
+      await pouchDBServico.obterTodosDados();
   }
 
   async obterGeneros() {
     await this.aguardarInicializacao();
     return await pouchDBServico.obterGenerosComFilmes();
+  }
+
+  async buscarFilmes(termo, genero) {
+    await this.aguardarInicializacao();
+    return await pouchDBServico.buscarFilmes(termo, genero);
   }
 
   async limparTudo() {
