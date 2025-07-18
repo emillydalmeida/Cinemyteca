@@ -1,4 +1,4 @@
-import pouchDBServico from './PouchDBServico.js';
+import servicoHibrido from './ServicoHibrido.js';
 
 class AdaptadorPouchDB {
   constructor() {
@@ -8,15 +8,11 @@ class AdaptadorPouchDB {
 
   async inicializar() {
     try {
-      console.log('🔄 Inicializando AdaptadorPouchDB...');
-      await pouchDBServico.aguardarInicializacao();
-      console.log('✅ PouchDBServico aguardado com sucesso');
-      
-      await pouchDBServico.migrarDoLocalStorage();
-      console.log('✅ Migração concluída com sucesso');
+      console.log('🔄 Inicializando AdaptadorPouchDB híbrido...');
+      await servicoHibrido.inicializar();
       
       this.inicializado = true;
-      console.log('✅ AdaptadorPouchDB inicializado');
+      console.log('✅ AdaptadorPouchDB híbrido inicializado');
       return true;
     } catch (error) {
       console.error('❌ Erro ao inicializar AdaptadorPouchDB:', error);
@@ -39,7 +35,7 @@ class AdaptadorPouchDB {
 
     try {
       await this.aguardarInicializacao();
-      return await pouchDBServico.obterFilmesPorGenero(genero);
+      return await servicoHibrido.obterFilmesPorGenero(genero);
     } catch (error) {
       console.error('❌ Erro no AdaptadorPouchDB:', error);
       return [];
@@ -48,17 +44,17 @@ class AdaptadorPouchDB {
 
   async adicionarFilme(genero, filme) {
     await this.aguardarInicializacao();
-    return await pouchDBServico.adicionarFilme(genero, filme);
+    return await servicoHibrido.adicionarFilme(genero, filme);
   }
 
   async removerFilme(genero, filmeId) {
     await this.aguardarInicializacao();
-    return await pouchDBServico.removerFilme(genero, filmeId);
+    return await servicoHibrido.removerFilme(genero, filmeId);
   }
 
   async atualizarFilme(genero, filmeAtualizado) {
     await this.aguardarInicializacao();
-    return await pouchDBServico.atualizarFilme(genero, filmeAtualizado);
+    return await servicoHibrido.atualizarFilme(genero, filmeAtualizado);
   }
 
   async verificarSeFilmeExiste(genero, filmeId) {
@@ -70,7 +66,7 @@ class AdaptadorPouchDB {
 
     try {
       await this.aguardarInicializacao();
-      return await pouchDBServico.verificarSeFilmeExiste(genero, filmeId);
+      return await servicoHibrido.verificarSeFilmeExiste(genero, filmeId);
     } catch (error) {
       console.error('❌ Erro no AdaptadorPouchDB:', error);
       return false;
@@ -131,7 +127,16 @@ class AdaptadorPouchDB {
 
   async criarBackup() {
     await this.aguardarInicializacao();
-    return await pouchDBServico.criarBackup();
+    return await servicoHibrido.criarBackup();
+  }
+
+  async obterEstatisticas() {
+    await this.aguardarInicializacao();
+    return await servicoHibrido.obterEstatisticas();
+  }
+
+  obterStatus() {
+    return servicoHibrido.obterStatus();
   }
 
   async obterTodosDados() {

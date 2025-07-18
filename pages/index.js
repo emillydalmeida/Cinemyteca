@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { useState } from 'react';
 import { useNotificacao } from '../components/NotificacaoProvider';
+import StatusSincronizacao from '../components/StatusSincronizacao';
 import ServicoArmazenamentoLocal from '../services/ArmLocalServico';
 import styles from "../styles/Home.module.css"
 
@@ -36,6 +37,7 @@ ${Object.entries(stats.porGenero).map(([gen, count]) => `${gen}: ${count} filmes
     };
     return (
         <>
+            <StatusSincronizacao />
             <div className={styles.botoesUtilidades}>
                 <button 
                     className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
