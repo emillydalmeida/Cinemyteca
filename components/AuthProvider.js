@@ -34,18 +34,22 @@ export function AuthProvider({ children }) {
           return;
         }
 
-        const { data: { session } } = await servicoSupabase.client.auth.getSession();
-        
-        if (session?.user) {
-          setUsuario(session.user);
-          setIsAdmin(true);
-        } else {
-          setUsuario(null);
-          setIsAdmin(false);
+        // FORÇAR LOGOUT NA INICIALIZAÇÃO
+        console.log('🔄 Forçando logout na inicialização...');
+        try {
+          await servicoSupabase.client.auth.signOut({ scope: 'local' });
+        } catch (logoutError) {
+          console.log('⚠️ Logout forçado completado (sessão já limpa)');
         }
+
+        // Limpar estado local
+        setUsuario(null);
+        setIsAdmin(false);
+        setCarregando(false);
+        
+        console.log('✅ Aplicação iniciada sem login');
       } catch (error) {
         console.error('❌ Erro ao verificar usuário:', error);
-      } finally {
         setCarregando(false);
       }
     };
@@ -97,15 +101,35 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      const { error } = await servicoSupabase.client.auth.signOut();
-      if (error) throw error;
+      console.log('🚪 Tentando logout...');
       
+      // Tentar logout normal primeiro
+      const { error } = await servicoSupabase.client.auth.signOut({ scope: 'local' });
+      
+      // Mesmo com erro, limpar estado local
       setUsuario(null);
       setIsAdmin(false);
+      
+      if (error && !error.message.includes('session missing')) {
+        console.warn('⚠️ Aviso no logout:', error);
+      }
+      
+      console.log('✅ Logout realizado com sucesso');
       return { sucesso: true };
     } catch (error) {
       console.error('❌ Erro no logout:', error);
-      return { sucesso: false, erro: 'Erro ao sair' };
+      
+      // Forçar limpeza mesmo com erro
+      setUsuario(null);
+      setIsAdmin(false);
+      
+      // Tentar limpeza forçada do localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('sb-' + process.env.NEXT_PUBLIC_SUPABASE_URL?.split('//')[1]?.split('.')[0] + '-auth-token');
+      }
+      
+      console.log('🔄 Estado limpo forçadamente');
+      return { sucesso: true }; // Retornar sucesso mesmo com erro, pois o estado foi limpo
     }
   };
 

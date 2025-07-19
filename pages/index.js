@@ -77,11 +77,14 @@ export default function Home() {
     };
 
     const handleLogout = async () => {
-        const resultado = await logout();
-        if (resultado.sucesso) {
+        try {
+            const resultado = await logout();
+            // Como modificamos o logout para sempre limpar o estado, sempre mostramos sucesso
             mostrarSucesso('Logout realizado com sucesso! 👋');
-        } else {
-            mostrarErro('Erro ao sair');
+        } catch (error) {
+            console.error('Erro no handleLogout:', error);
+            // Mesmo com erro, mostrar sucesso pois a função logout força a limpeza
+            mostrarSucesso('Sessão encerrada! 👋');
         }
     };
 
