@@ -94,7 +94,6 @@ Para usuários com permissões especiais:
 
 **Emilly Almeida**
 - 🐙 GitHub: [@emillydalmeida](https://github.com/emillydalmeida)
-- 💼 LinkedIn: [emilly-almeida](https://linkedin.com/in/emilly-almeida)
 
 ## 📄 Licença
 
