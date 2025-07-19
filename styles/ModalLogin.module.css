@@ -55,8 +55,8 @@
 
 .botaoFechar {
   position: absolute;
-  top: -10px;
-  right: -10px;
+  top: 10px;
+  right: 10px;
   background: rgba(255, 255, 255, 0.1);
   border: none;
   width: 32px;
@@ -79,6 +79,7 @@
 .form {
   display: flex;
   flex-direction: column;
+  padding: 20px;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }

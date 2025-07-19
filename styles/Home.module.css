@@ -6,8 +6,27 @@
   margin: 20px auto;
 }
 
+@keyframes piscarDestaque {
+  0%, 50% {
+    color: #add3ff;
+    text-shadow: none;
+  }
+  51%, 100% {
+    color: #ff6ead;
+    text-shadow: 0 0 10px rgb(255, 65, 147);
+  }
+}
+
 .destaque {
-  color: #F564A9;
+  color: #add3ff;
+  animation: piscarDestaque 2s infinite;
+  transition: all 0.3s ease;
+}
+
+h1:hover .destaque {
+  animation-play-state: paused;
+  color: #ff6ead;
+  text-shadow: 0 0 15px rgb(255, 65, 147);
 }
 
 .botoesUtilidades {
@@ -37,11 +56,11 @@
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #EEAECA, #94BBE9);
 }
 
 .botaoPadrao:hover {
-  background-color: #F564A9;
+  background: linear-gradient(135deg, #ec93b9, #79ace8);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
@@ -58,45 +77,43 @@
 }
 
 .botaoUtilidade {
-  background: rgba(255, 255, 255, 0.1) !important; 
+  background: linear-gradient(135deg, #EEAECA, #94BBE9);
   border: white 1px dashed !important;
   backdrop-filter: blur(10px) !important;
 }
 
 .botaoUtilidade:hover {
-  background-color: #F564A9 !important;
+  background: linear-gradient(135deg, #ec93b9, #79ace8);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
 }
 
 .botaoLogin {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%) !important;
-  border: 1px solid rgba(76, 175, 80, 0.3) !important;
+  background: linear-gradient(135deg, #EEAECA, #94BBE9);
+  border: 1px dashed white;
 }
 
 .botaoLogin:hover {
-  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%) !important;
+  background: linear-gradient(135deg, #ec93b9, #79ace8);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 6px 20px rgba(251, 98, 203, 0.4);
 }
 
 .botaoSair {
-  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%) !important;
-  border: 1px solid rgba(244, 67, 54, 0.3) !important;
+  background: linear-gradient(135deg, #EEAECA, #94BBE9);
+  border: 1px dashed white;
 }
 
 .botaoSair:hover {
-  background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%) !important;
+  background: linear-gradient(135deg, #ec93b9, #79ace8);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+  box-shadow: 0 6px 20px rgba(251, 98, 203, 0.4);
 }
 
 .subtitulo {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
-  font-style: italic;
+  color: rgb(255, 255, 255);
+  font-size: 1.0rem;
 }
 
 .generos {
@@ -111,8 +128,8 @@
   border-radius: 10%;
   border: 2px dashed rgba(255, 255, 255, 0.8);
   padding: 10px;
-  width: 200px;
-  height: 280px;
+  width: 160px;
+  height: 240px;
   object-fit: cover;
   transition: transform 0.3s;
 }
@@ -153,4 +170,34 @@
     font-size: 0.9rem;
     padding: 8px 12px;
   }
+}
+
+.footer {
+  text-align: center;
+}
+
+.footer p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.footer a {
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.footer a:hover {
+  color: #ff6ead;
+  text-shadow: 0 0 10px rgb(255, 108, 199);
+}
+
+.footer a:hover .destaque {
+  color: #ff6ead;
+  text-shadow: 0 0 10px rgb(255, 65, 147);
+}
+
+.footer .destaque {
+  animation: none;
 }
