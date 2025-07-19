@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNotificacao } from '../components/NotificacaoProvider';
 import { useAuth } from '../components/AuthProvider';
 import ModalConfirmacao from '../components/ModalConfirmacao';
@@ -12,6 +12,7 @@ export default function Home() {
     const { usuario, isAdmin, logout } = useAuth();
     const [modalLimparDuplicatas, setModalLimparDuplicatas] = useState(false);
     const [modalLogin, setModalLogin] = useState(false);
+    const [menuFerramentasAberto, setMenuFerramentasAberto] = useState(false);
 
     const mostrarEstatisticas = async () => {
         try {
@@ -50,6 +51,31 @@ export default function Home() {
         }
     };
 
+    const gerarRelatorio = async () => {
+        try {
+            mostrarInfo('Gerando relatório... Isso pode levar alguns segundos.');
+            const relatorio = await servicoFilmes.gerarRelatorioUltimosFilmes();
+            
+            // Criar e baixar arquivo JSON
+            const blob = new Blob([JSON.stringify(relatorio, null, 2)], { 
+                type: 'application/json' 
+            });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `cinemyteca-relatorio-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            mostrarSucesso(`Relatório baixado com sucesso! ${relatorio.total_filmes} filmes incluídos.`);
+        } catch (error) {
+            console.error('❌ Erro ao gerar relatório:', error);
+            mostrarErro('Erro ao gerar relatório. Tente novamente.');
+        }
+    };
+
     const handleLogout = async () => {
         const resultado = await logout();
         if (resultado.sucesso) {
@@ -59,66 +85,135 @@ export default function Home() {
         }
     };
 
+    // Fechar menu de ferramentas ao clicar fora
+    useEffect(() => {
+        const handleClickFora = (event) => {
+            if (menuFerramentasAberto && !event.target.closest(`.${styles.menuFerramentas}`)) {
+                setMenuFerramentasAberto(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickFora);
+        return () => document.removeEventListener('mousedown', handleClickFora);
+    }, [menuFerramentasAberto]);
+
     return (
         <>
             <div className={styles.botoesUtilidades}>
-                <button 
-                    className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
-                    onClick={mostrarEstatisticas}
-                    title="Ver estatísticas"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M3 3v18h18"/>
-                        <path d="M18 17V9"/>
-                        <path d="M13 17V5"/>
-                        <path d="M8 17v-3"/>
-                    </svg>
-                    Estatísticas
-                </button>
-
-                {isAdmin && (
-                    <button 
-                        className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
-                        onClick={abrirModalLimparDuplicatas}
-                        title="Limpar filmes duplicados"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 6h18"/>
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                            <line x1="10" y1="11" x2="10" y2="17"/>
-                            <line x1="14" y1="11" x2="14" y2="17"/>
-                        </svg>
-                        Limpar Duplicatas
-                    </button>
-                )}
-
                 {isAdmin ? (
-                    <button 
-                        className={`${styles.botaoPadrao} ${styles.botaoSair}`}
-                        onClick={handleLogout}
-                        title="Sair da conta admin"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16,17 21,12 16,7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                        Sair
-                    </button>
+                    <div className={styles.menuFerramentas}>
+                        <button 
+                            className={`${styles.botaoPadrao} ${styles.botaoFerramentas}`}
+                            onClick={() => setMenuFerramentasAberto(!menuFerramentasAberto)}
+                            title="Menu admin"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M12.22 2h-.44a2 2 0 0 0-2 2.18l.07 1.45a8 8 0 0 0-1.31.75l-1.27-.7a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l1.27.7a8 8 0 0 0 0 1.5l-1.27.7a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l1.27-.7a8 8 0 0 0 1.31.75l-.07 1.45a2 2 0 0 0 2 2.18h.44a2 2 0 0 0 2-2.18l-.07-1.45a8 8 0 0 0 1.31-.75l1.27.7a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-1.27-.7a8 8 0 0 0 0-1.5l1.27-.7a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-1.27.7a8 8 0 0 0-1.31-.75l.07-1.45a2 2 0 0 0-2-2.18Z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                            Configurações
+                        </button>
+
+                        {menuFerramentasAberto && (
+                            <div className={styles.dropdownFerramentas}>
+                                <button 
+                                    className={styles.itemFerramentas}
+                                    onClick={() => {
+                                        mostrarEstatisticas();
+                                        setMenuFerramentasAberto(false);
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M3 3v18h18"/>
+                                        <path d="M18 17V9"/>
+                                        <path d="M13 17V5"/>
+                                        <path d="M8 17v-3"/>
+                                    </svg>
+                                    Estatísticas
+                                </button>
+                                
+                                <button 
+                                    className={styles.itemFerramentas}
+                                    onClick={() => {
+                                        gerarRelatorio();
+                                        setMenuFerramentasAberto(false);
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14,2 14,8 20,8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                        <polyline points="10,9 9,9 8,9"/>
+                                    </svg>
+                                    Baixar Relatório
+                                </button>
+                                
+                                <button 
+                                    className={styles.itemFerramentas}
+                                    onClick={() => {
+                                        abrirModalLimparDuplicatas();
+                                        setMenuFerramentasAberto(false);
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M3 6h18"/>
+                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                        <line x1="10" y1="11" x2="10" y2="17"/>
+                                        <line x1="14" y1="11" x2="14" y2="17"/>
+                                    </svg>
+                                    Limpar Duplicatas
+                                </button>
+                                
+                                <hr className={styles.separadorMenu} />
+                                
+                                <button 
+                                    className={`${styles.itemFerramentas} ${styles.itemSair}`}
+                                    onClick={() => {
+                                        handleLogout();
+                                        setMenuFerramentasAberto(false);
+                                    }}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                                        <polyline points="16,17 21,12 16,7"/>
+                                        <line x1="21" y1="12" x2="9" y2="12"/>
+                                    </svg>
+                                    Sair
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 ) : (
-                    <button 
-                        className={`${styles.botaoPadrao} ${styles.botaoLogin}`}
-                        onClick={() => setModalLogin(true)}
-                        title="Entrar como admin"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
-                            <polyline points="10,17 15,12 10,7"/>
-                            <line x1="15" y1="12" x2="3" y2="12"/>
-                        </svg>
-                        Admin
-                    </button>
+                    <>
+                        <button 
+                            className={`${styles.botaoPadrao} ${styles.botaoUtilidade}`}
+                            onClick={mostrarEstatisticas}
+                            title="Ver estatísticas"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M3 3v18h18"/>
+                                <path d="M18 17V9"/>
+                                <path d="M13 17V5"/>
+                                <path d="M8 17v-3"/>
+                            </svg>
+                            Estatísticas
+                        </button>
+
+                        <button 
+                            className={`${styles.botaoPadrao} ${styles.botaoLogin}`}
+                            onClick={() => setModalLogin(true)}
+                            title="Entrar como admin"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                                <polyline points="10,17 15,12 10,7"/>
+                                <line x1="15" y1="12" x2="3" y2="12"/>
+                            </svg>
+                            Entrar
+                        </button>
+                    </>
                 )}
             </div>
 

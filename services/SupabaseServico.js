@@ -91,8 +91,16 @@ class ServicoSupabase {
         comentario_usuario: filme.comentarioUsuario,
         tags_usuario: filme.tagsUsuario || [],
         data_adicao: new Date().toISOString(),
-        usuario_id: this.obterUsuarioId()
+        usuario_id: this.obterUsuarioId(),
+        usuario_email: await this.obterEmailUsuario()
       };
+
+      console.log('📝 Dados do filme para inserir:', {
+        tmdb_id: filmeData.tmdb_id,
+        titulo: filmeData.titulo,
+        genero: filmeData.genero,
+        usuario_id: filmeData.usuario_id
+      });
 
       const { data, error } = await supabase
         .from('filmes')
@@ -102,14 +110,20 @@ class ServicoSupabase {
 
       if (error) {
         console.error('❌ Erro ao adicionar filme no Supabase:', error);
-        return null;
+        console.error('📋 Detalhes do erro:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw error;
       }
 
       console.log('✅ Filme adicionado no Supabase:', filme.title);
       return data;
     } catch (error) {
       console.error('❌ Erro ao adicionar filme:', error);
-      return null;
+      throw error;
     }
   }
 
@@ -282,6 +296,20 @@ class ServicoSupabase {
     return userId;
   }
 
+  async obterEmailUsuario() {
+    if (!supabase) {
+      return 'usuario_anonimo';
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      return user?.email || 'usuario_anonimo';
+    } catch (error) {
+      console.error('❌ Erro ao obter email do usuário:', error);
+      return 'usuario_anonimo';
+    }
+  }
+
   async limparDuplicatas(genero = null) {
     if (!supabase || !this.inicializado) {
       console.log('⚠️ Supabase não disponível para limpar duplicatas');
@@ -342,6 +370,68 @@ class ServicoSupabase {
     } catch (error) {
       console.error('❌ Erro na limpeza de duplicatas:', error);
       return false;
+    }
+  }
+
+  async gerarRelatorioUltimosFilmes(limite = 50) {
+    if (!supabase || !this.inicializado) {
+      console.log('⚠️ Supabase não disponível para gerar relatório');
+      return [];
+    }
+
+    try {
+      console.log(`📊 Buscando últimos ${limite} filmes para relatório...`);
+      
+      // Tentar primeiro com usuario_email, se falhar usar fallback
+      let query = supabase
+        .from('filmes')
+        .select('titulo, genero, data_adicao, usuario_id, usuario_email, nota_tmdb, nota_usuario, data_lancamento')
+        .order('data_adicao', { ascending: false })
+        .limit(limite);
+
+      let { data: filmes, error } = await query;
+
+      // Se der erro de coluna não existir, tentar sem usuario_email
+      if (error && error.code === '42703' && error.message.includes('usuario_email')) {
+        console.log('⚠️ Coluna usuario_email não existe, usando fallback...');
+        
+        const { data: filmesFallback, error: errorFallback } = await supabase
+          .from('filmes')
+          .select('titulo, genero, data_adicao, usuario_id, nota_tmdb, nota_usuario, data_lancamento')
+          .order('data_adicao', { ascending: false })
+          .limit(limite);
+
+        if (errorFallback) {
+          console.error('❌ Erro ao buscar filmes para relatório (fallback):', errorFallback);
+          throw errorFallback;
+        }
+
+        filmes = filmesFallback;
+      } else if (error) {
+        console.error('❌ Erro ao buscar filmes para relatório:', error);
+        throw error;
+      }
+
+      // Formatar dados para relatório
+      const relatorio = {
+        data_geracao: new Date().toISOString(),
+        total_filmes: filmes.length,
+        filmes: filmes.map(filme => ({
+          titulo: filme.titulo,
+          genero: filme.genero,
+          nota_tmdb: filme.nota_tmdb,
+          nota_usuario: filme.nota_usuario,
+          ano: filme.data_lancamento ? new Date(filme.data_lancamento).getFullYear() : null,
+          data_adicao: filme.data_adicao,
+          usuario_responsavel: filme.usuario_email || filme.usuario_id || 'admin'
+        }))
+      };
+
+      console.log(`✅ Relatório gerado com ${filmes.length} filmes`);
+      return relatorio;
+    } catch (error) {
+      console.error('❌ Erro ao gerar relatório:', error);
+      throw error;
     }
   }
 

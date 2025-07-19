@@ -53,8 +53,8 @@ class ServicoFilmes {
         criadoEm: new Date().toISOString()
       };
 
-      const sucesso = await servicoSupabase.adicionarFilme(genero, filmeCompleto);
-      if (sucesso) {
+      const resultado = await servicoSupabase.adicionarFilme(filmeCompleto);
+      if (resultado) {
         console.log(`✅ Filme "${dadosFilme.title}" adicionado ao gênero ${genero}`);
         return true;
       }
@@ -147,6 +147,20 @@ class ServicoFilmes {
     } catch (error) {
       console.error('❌ Erro ao limpar duplicatas:', error);
       return false;
+    }
+  }
+
+  async gerarRelatorioUltimosFilmes() {
+    await this.inicializar();
+    
+    try {
+      console.log('📊 Gerando relatório dos últimos filmes...');
+      const relatorio = await servicoSupabase.gerarRelatorioUltimosFilmes();
+      console.log('✅ Relatório gerado com sucesso');
+      return relatorio;
+    } catch (error) {
+      console.error('❌ Erro ao gerar relatório:', error);
+      throw error;
     }
   }
 

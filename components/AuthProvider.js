@@ -18,7 +18,10 @@ export function AuthProvider({ children }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const isClient = useIsClient();
 
-  const ADMIN_EMAIL = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'emillydalmeida@gmail.com';
+  // Sistema simplificado: qualquer usuário logado é admin
+  // const ADMIN_EMAILS = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'emillydalmeida@gmail.com')
+  //   .split(',')
+  //   .map(email => email.trim());
 
   useEffect(() => {
     if (!isClient) return;
@@ -35,7 +38,7 @@ export function AuthProvider({ children }) {
         
         if (session?.user) {
           setUsuario(session.user);
-          setIsAdmin(session.user.email === ADMIN_EMAIL);
+          setIsAdmin(true);
         } else {
           setUsuario(null);
           setIsAdmin(false);
@@ -59,7 +62,7 @@ export function AuthProvider({ children }) {
         
         if (session?.user) {
           setUsuario(session.user);
-          setIsAdmin(session.user.email === ADMIN_EMAIL);
+          setIsAdmin(true); 
         } else {
           setUsuario(null);
           setIsAdmin(false);
@@ -69,7 +72,7 @@ export function AuthProvider({ children }) {
     );
 
     return () => subscription.unsubscribe();
-  }, [isClient, ADMIN_EMAIL]);
+  }, [isClient]);
 
   const login = async (email, senha) => {
     try {

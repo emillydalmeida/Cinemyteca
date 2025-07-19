@@ -1,91 +1,105 @@
 # 🎬 Cinemyteca
 
-Uma aplicação web para gerenciar sua coleção pessoal de filmes assistidos, com interface moderna e armazenamento em nuvem.
+Portfólio pessoal de filmes assistidos com sistema de catalogação por gêneros, avaliações e relatórios de dados.
 
 ## 🌐 Acesse Online
 
 **[cinemyteca.vercel.app](https://cinemyteca.vercel.app)**
 
-*Disponível gratuitamente na web - não precisa instalar nada!*
+*Portfólio público para visualizar minha coleção de filmes*
 
 ## ✨ Funcionalidades
 
-- 📱 **Interface Responsiva**: Design moderno que funciona em qualquer dispositivo
-- 🎭 **Categorias por Gênero**: Organize filmes por ação, comédia, drama, terror, etc.
-- ⭐ **Sistema de Avaliação**: Adicione notas e comentários pessoais
-- 📊 **Estatísticas**: Veja sua coleção com números e análises
-- 🗑️ **Gerenciamento**: Adicione, remova e gerencie duplicatas
-- 🔍 **Busca Integrada**: Pesquisa filmes via TMDB API
-- ☁️ **Salvamento Automático**: Seus dados ficam seguros na nuvem
+- 📱 **Interface Responsiva**: Visualização otimizada para qualquer dispositivo
+- 🎭 **Categorias por Gênero**: Filmes organizados por ação, comédia, drama, terror, etc.
+- ⭐ **Sistema de Avaliação**: Notas TMDB + avaliações pessoais
+- 📊 **Estatísticas**: Análise da coleção com números e gráficos
+- 📋 **Relatórios**: Exportação de dados em formato JSON
+- 🔍 **Busca Integrada**: Pesquisa via TMDB API
+- 🗑️ **Gerenciamento**: Limpeza de duplicatas e organização
+
+### 🔐 **Acesso Administrativo**
+Para usuários com permissões especiais:
+- **Estatísticas**: Painel com dados da coleção
+- **Relatórios**: Exportar dados completos em JSON
+- **Limpar Duplicatas**: Ferramenta de organização automática
+- **Logout**: Encerrar sessão administrativa
 
 ## 🏗️ Tecnologias
 
-- **Next.js 15.4.1**: Framework React moderno
-- **Supabase**: Banco de dados PostgreSQL em nuvem
+- **Next.js 15.4.1**: Framework React com renderização server-side
+- **Supabase**: Banco PostgreSQL + Sistema de autenticação
 - **TMDB API**: Base de dados de filmes
+- **CSS Modules**: Estilização componentizada
 - **Vercel**: Hospedagem e deploy contínuo
 
 ## 🎯 Como Usar
 
-1. **Acesse**: Visite [cinemyteca.vercel.app](https://cinemyteca.vercel.app)
-2. **Explore**: Navegue pelas categorias de filmes
-3. **Adicione**: Clique no "Adicionar Filme" para adicionar um filme
-4. **Busque**: Digite o nome do filme no modal de busca
-5. **Avalie**: Adicione notas de 1-10 e comentários pessoais
-6. **Estatísticas**: Veja suas estatísticas na página inicial
+### **Visualização Pública**
+- Acesse [cinemyteca.vercel.app](https://cinemyteca.vercel.app)
+- Navegue pelas categorias de filmes
+- Veja avaliações e estatísticas da coleção
 
-## 📱 Recursos
+### **Administração** (Acesso Restrito)
+- Login via Supabase para gerenciar conteúdo
+- **Adicionar Filmes**: Busca via TMDB API com notas e comentários
+- **Estatísticas**: Visão geral da coleção
+- **Relatórios**: Exportação de dados em JSON
+- **Organização**: Limpeza automática de duplicatas
 
-- ✅ **Funciona em qualquer dispositivo** (PC, tablet, celular)
-- ✅ **Não precisa instalar** - use direto no navegador
-- ✅ **Dados seguros** - salvos automaticamente na nuvem
-- ✅ **Interface intuitiva** - fácil de usar
-- ✅ **Busca inteligente** - encontre qualquer filme
-- ✅ **Totalmente gratuito**
+## 📊 Recursos
+
+### 🔍 **Sistema de Relatórios**
+```json
+{
+  "data_geracao": "2025-01-18T15:30:00Z",
+  "total_filmes": 42,
+  "filmes": [
+    {
+      "titulo": "Inception",
+      "genero": "ficcao",
+      "nota_tmdb": 8.8,
+      "nota_usuario": 9.5,
+      "ano": 2010,
+      "usuario_responsavel": "admin@example.com"
+    }
+  ]
+}
+```
+
+### 📱 **Características**
+- Interface responsiva para todos os dispositivos
+- Dados salvos automaticamente na nuvem
+- Busca integrada com base de dados TMDB
+- Sistema de backup e segurança
+
+## 📱 Benefícios
+
+- ✅ **Acesso público**: Visualize o portfólio sem necessidade de login
+- ✅ **Organização**: Filmes categorizados por gêneros
+- ✅ **Avaliações**: Sistema dual com notas TMDB e pessoais
+- ✅ **Dados exportáveis**: Relatórios em formato JSON
+- ✅ **Interface moderna**: Design responsivo e funcional
+- ✅ **Totalmente gratuito**: Hospedado na Vercel
+
+## 🤝 Contribuição
+
+1. Fork o projeto
+2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
+3. Commit as mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/nova-funcionalidade`)
+5. Abra um Pull Request
 
 ## 👩‍💻 Desenvolvedora
 
-**Emilly Efanny** - [GitHub](https://github.com/emillydalmeida)
-
-## 🔧 Para Desenvolvedores
-
-Interessado no código? Este projeto está open source! 
-
-### Instalação Local
-
-```bash
-git clone https://github.com/emillydalmeida/Cinemyteca.git
-cd Cinemyteca
-npm install
-npm run dev
-```
-
-### Contribuições
-
-1. Faça um fork do projeto
-2. Crie uma branch (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Abra um Pull Request
+**Emilly Almeida**
+- 🐙 GitHub: [@emillydalmeida](https://github.com/emillydalmeida)
+- 💼 LinkedIn: [emilly-almeida](https://linkedin.com/in/emilly-almeida)
 
 ## 📄 Licença
 
-Este projeto está licenciado sob a **Licença MIT** - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-### O que isso significa?
-
-✅ **Você pode:**
-- ✨ Usar comercialmente
-- 🔧 Modificar o código
-- 📦 Distribuir
-- 🔒 Usar privadamente
-- 📋 Sublicenciar
-
-⚠️ **Condições:**
-- 📝 Incluir a licença e copyright nos arquivos
-- 🛡️ Uso por sua conta e risco
+Projeto sob a **Licença MIT**. Veja [LICENSE](LICENSE) para mais detalhes.
 
 ---
 
-🎬 **[Acesse agora: cinemyteca.vercel.app](https://cinemyteca.vercel.app)**
-
-*Feito com ❤️ para cinéfilos que amam organizar suas coleções!*
+🎬 **[Acesse o portfólio: cinemyteca.vercel.app](https://cinemyteca.vercel.app)**

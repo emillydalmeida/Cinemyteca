@@ -180,7 +180,7 @@
   gap: 8px;
   color: white;
   text-decoration: none;
-  background: none;
+  background: linear-gradient(135deg, #EEAECA, #94BBE9) !important;
   border: white 1px dashed;
   border-radius: 8px;
   padding: 10px 15px;
@@ -196,7 +196,7 @@
 }
 
 .botaoFlutuante:hover {
-  background-color: #F564A9;
+  background: linear-gradient(135deg, #ec93b9, #79ace8);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
@@ -230,10 +230,11 @@
   cursor: pointer;
   font-family: inherit;
   font-size: inherit;
+  background: linear-gradient(135deg, #EEAECA, #94BBE9) !important;
 }
 
 .botaoPadrao:hover {
-  background-color: #F564A9;
+  background: linear-gradient(135deg, #ec93b9, #79ace8);
   color: white;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(245, 100, 169, 0.5);
@@ -296,7 +297,6 @@
   }
 }
 
-/* Estados da aplicação */
 .carregando, .erro, .secaoVazia {
   text-align: center;
   padding: 3rem 2rem;

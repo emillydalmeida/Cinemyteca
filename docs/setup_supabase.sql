@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS filmes (
     tags_usuario TEXT[] DEFAULT '{}',
     data_adicao TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     usuario_id TEXT NOT NULL,
+    usuario_email TEXT DEFAULT 'usuario_anonimo',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS filmes (
 CREATE INDEX IF NOT EXISTS idx_filmes_genero ON filmes(genero);
 CREATE INDEX IF NOT EXISTS idx_filmes_tmdb_id ON filmes(tmdb_id);
 CREATE INDEX IF NOT EXISTS idx_filmes_usuario_id ON filmes(usuario_id);
+CREATE INDEX IF NOT EXISTS idx_filmes_usuario_email ON filmes(usuario_email);
 CREATE INDEX IF NOT EXISTS idx_filmes_genero_tmdb_id ON filmes(genero, tmdb_id);
 
 ALTER TABLE filmes ENABLE ROW LEVEL SECURITY;
